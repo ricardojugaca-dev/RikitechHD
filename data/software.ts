@@ -6,6 +6,10 @@ export type Software = {
   category: string;
   description: string;
   image: string;
+  developer: string;
+  operatingSystem: string;
+  license: string;
+  size: string;
 };
 
 export const softwareList: Software[] = [
@@ -18,6 +22,10 @@ export const softwareList: Software[] = [
     description:
       "Tool designed to detect and update outdated drivers on Windows.",
     image: "/software/Driver-Booster.png",
+    developer: "IObit",
+    operatingSystem: "Windows",
+    license: "Freemium",
+    size: "Approx. 30 MB",
   },
   {
     id: "vlc",
@@ -28,6 +36,10 @@ export const softwareList: Software[] = [
     description:
       "Free and open-source multimedia player for many audio and video formats.",
     image: "/software/Ccleaner.png",
+    developer: "VideoLAN",
+    operatingSystem: "Windows",
+    license: "Free & Open Source",
+    size: "Approx. 40 MB",
   },
   {
     id: "winrar",
@@ -38,5 +50,9 @@ export const softwareList: Software[] = [
     description:
       "Popular file compression and archive management software.",
     image: "/software/Advanced-System-Care.png",
+    developer: "RARLAB",
+    operatingSystem: "Windows",
+    license: "Trialware",
+    size: "Approx. 3 MB",
   },
 ];
