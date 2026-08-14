@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { softwareList } from "@/data/software";
 
 type SoftwarePageProps = {
@@ -7,6 +8,55 @@ type SoftwarePageProps = {
     slug: string;
   }>;
 };
+
+export async function generateMetadata({
+  params,
+}: SoftwarePageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  const software = softwareList.find(
+    (item) => item.slug === slug
+  );
+
+  if (!software) {
+    return {
+      title: "Software not found | RIKITECH",
+      description: "The requested software could not be found.",
+    };
+  }
+
+  return {
+    title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+    description: software.description,
+
+    alternates: {
+      canonical: `https://rikitech-hd.vercel.app/software/${software.slug}`,
+    },
+
+    openGraph: {
+      title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+      description: software.description,
+      url: `https://rikitech-hd.vercel.app/software/${software.slug}`,
+      siteName: "RIKITECH",
+      type: "website",
+      images: [
+        {
+          url: `https://rikitech-hd.vercel.app${software.image}`,
+          width: 1280,
+          height: 720,
+          alt: `${software.name} - RIKITECH`,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+      description: software.description,
+      images: [`https://rikitech-hd.vercel.app${software.image}`],
+    },
+  };
+}
 
 export default async function SoftwarePage({
   params,
@@ -24,7 +74,7 @@ export default async function SoftwarePage({
   return (
     <main className="w-full flex-1">
       <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-        
+
         {/* Breadcrumb */}
         <nav className="mb-8 text-sm text-black/50 dark:text-white/50">
           <span>Home</span>
@@ -38,19 +88,19 @@ export default async function SoftwarePage({
 
         {/* Main software information */}
         <div className="grid items-start gap-10 lg:grid-cols-[420px_1fr] xl:grid-cols-[480px_1fr]">
-          
+
           {/* Image */}
           <div className="w-full overflow-hidden rounded-2xl border border-black/10 bg-black/5 dark:border-white/10 dark:bg-white/5">
             <Image
-                src={software.image}
-                alt={`${software.name} logo`}
-                width={1280}
-                height={720}
-                priority
-                sizes="(max-width: 1023px) 100vw, 480px"
-                className="block h-auto w-full"
+              src={software.image}
+              alt={`${software.name} logo`}
+              width={1280}
+              height={720}
+              priority
+              sizes="(max-width: 1023px) 100vw, 480px"
+              className="block h-auto w-full"
             />
-            </div>
+          </div>
 
           {/* Information */}
           <div>
@@ -98,7 +148,7 @@ export default async function SoftwarePage({
           </h2>
 
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            
+
             <div className="rounded-xl border border-black/10 p-5 dark:border-white/10">
               <p className="text-sm text-black/50 dark:text-white/50">
                 Version

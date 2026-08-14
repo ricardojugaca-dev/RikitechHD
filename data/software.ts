@@ -25,7 +25,7 @@ export const softwareList: Software[] = [
     developer: "IObit",
     operatingSystem: "Windows",
     license: "Freemium",
-    size: "Approx. 30 MB",
+    size: "—",
   },
   {
     id: "vlc",
@@ -35,11 +35,11 @@ export const softwareList: Software[] = [
     category: "Multimedia",
     description:
       "Free and open-source multimedia player for many audio and video formats.",
-    image: "/software/Ccleaner.png",
+    image: "/software/Vlc-Media-Player.png",
     developer: "VideoLAN",
     operatingSystem: "Windows",
-    license: "Free & Open Source",
-    size: "Approx. 40 MB",
+    license: "Open Source",
+    size: "—",
   },
   {
     id: "winrar",
@@ -49,10 +49,10 @@ export const softwareList: Software[] = [
     category: "Utilities",
     description:
       "Popular file compression and archive management software.",
-    image: "/software/Advanced-System-Care.png",
+    image: "/software/Winrar.png",
     developer: "RARLAB",
     operatingSystem: "Windows",
-    license: "Trialware",
-    size: "Approx. 3 MB",
+    license: "Trial",
+    size: "—",
   },
 ];
