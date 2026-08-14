@@ -26,7 +26,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+    title: `${software.name} ${software.version} - Download for Windows`,
     description: software.description,
 
     alternates: {
@@ -34,24 +34,24 @@ export async function generateMetadata({
     },
 
     openGraph: {
-      title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+      title: `${software.name} ${software.version} - Download for Windows`,
       description: software.description,
       url: `https://rikitech-hd.vercel.app/software/${software.slug}`,
-      siteName: "RIKITECH",
+      siteName: "RIKITECHHD",
       type: "website",
       images: [
         {
           url: `https://rikitech-hd.vercel.app${software.image}`,
           width: 1280,
           height: 720,
-          alt: `${software.name} - RIKITECH`,
+          alt: `${software.name} - RIKITECHHD`,
         },
       ],
     },
 
     twitter: {
       card: "summary_large_image",
-      title: `${software.name} ${software.version} - Download for Windows | RIKITECH`,
+      title: `${software.name} ${software.version} - Download for Windows`,
       description: software.description,
       images: [`https://rikitech-hd.vercel.app${software.image}`],
     },

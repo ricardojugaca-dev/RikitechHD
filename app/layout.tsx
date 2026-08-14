@@ -15,8 +15,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "RIKITECH",
-  description: "Software, drivers, tutorials and technology.",
+  metadataBase: new URL("https://rikitech-hd.vercel.app"),
+
+  title: {
+    default: "RIKITECHHD - Software, Drivers & Technology",
+    template: "%s | RIKITECHHD",
+  },
+
+  description:
+    "RIKITECHHD is a technology website offering software, drivers, tutorials and useful resources for Windows users.",
+
+  applicationName: "RIKITECHHD",
+
+  openGraph: {
+    title: "RIKITECHHD - Software, Drivers & Technology",
+    description:
+      "Software, drivers, tutorials and useful technology resources.",
+    siteName: "RIKITECHHD",
+    locale: "en_US",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "RIKITECHHD - Software, Drivers & Technology",
+    description:
+      "Software, drivers, tutorials and useful technology resources.",
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -24,7 +54,7 @@ export default function RootLayout({
 }: LayoutProps<"/">) {
   return (
     <html
-      lang="es"
+      lang="en"
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
