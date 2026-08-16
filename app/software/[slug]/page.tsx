@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { softwareList } from "@/data/software";
+import CTA from "@/components/layout/CTA";
 
 type SoftwarePageProps = {
   params: Promise<{
@@ -600,6 +601,8 @@ export default async function SoftwarePage({
 
             </div>
           </section>
+          <CTA />
+
 
         </article>
       </main>
