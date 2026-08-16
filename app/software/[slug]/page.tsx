@@ -72,6 +72,18 @@ export default async function SoftwarePage({
   if (!software) {
     notFound();
   }
+  const relatedSoftware = [
+      ...softwareList.filter(
+        (item) =>
+          item.slug !== software.slug &&
+          item.category === software.category
+      ),
+      ...softwareList.filter(
+        (item) =>
+          item.slug !== software.slug &&
+          item.category !== software.category
+      ),
+    ].slice(0, 3);
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -469,6 +481,57 @@ export default async function SoftwarePage({
 
             </div>
           </section>
+          {/* Related Software */}
+          {relatedSoftware.length > 0 && (
+            <section className="mt-16 border-t border-black/10 pt-10 dark:border-white/10">
+              <h2 className="text-2xl font-bold">
+                Related Software
+              </h2>
+
+              <p className="mt-3 text-black/60 dark:text-white/60">
+                You may also be interested in these software programs.
+              </p>
+
+              <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {relatedSoftware.map((item) => (
+                  <a
+                    key={item.slug}
+                    href={`/software/${item.slug}`}
+                    className="group overflow-hidden rounded-2xl border border-black/10 bg-black/[0.02] transition hover:-translate-y-1 hover:shadow-md dark:border-white/10 dark:bg-white/[0.02]"
+                  >
+                    <div className="overflow-hidden">
+                      <Image
+                        src={item.image}
+                        alt={`${item.name} ${item.version}`}
+                        width={1280}
+                        height={720}
+                        sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw"
+                        className="block h-auto w-full transition duration-300 group-hover:scale-[1.02]"
+                      />
+                    </div>
+
+                    <div className="p-5">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
+                        {item.category}
+                      </p>
+
+                      <h3 className="mt-2 text-lg font-bold">
+                        {item.name}
+                      </h3>
+
+                      <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+                        Version {item.version}
+                      </p>
+
+                      <span className="mt-4 inline-block text-sm font-semibold">
+                        View software →
+                      </span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
 
           {/* ================================================== */}
           {/* SHARE */}
@@ -511,42 +574,7 @@ export default async function SoftwarePage({
             </div>
           </section>
 
-          {/* ================================================== */}
-          {/* RELATED SOFTWARE */}
-          {/* ================================================== */}
-
-          <section className="mt-16 border-t border-black/10 pt-10 dark:border-white/10">
-            <h2 className="text-2xl font-bold">
-              Related Software
-            </h2>
-
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-
-              {softwareList
-                .filter(
-                  (item) =>
-                    item.slug !== software.slug &&
-                    item.category === software.category
-                )
-                .slice(0, 3)
-                .map((related) => (
-                  <a
-                    key={related.slug}
-                    href={`/software/${related.slug}`}
-                    className="group rounded-xl border border-black/10 p-5 transition hover:-translate-y-0.5 hover:bg-black/[0.02] dark:border-white/10 dark:hover:bg-white/[0.02]"
-                  >
-                    <h3 className="font-semibold group-hover:underline">
-                      {related.name}
-                    </h3>
-
-                    <p className="mt-2 text-sm text-black/50 dark:text-white/50">
-                      {related.description}
-                    </p>
-                  </a>
-                ))}
-
-            </div>
-          </section>
+        
 
           {/* ================================================== */}
           {/* COMMENTS */}

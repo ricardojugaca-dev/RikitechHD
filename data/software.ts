@@ -62,7 +62,12 @@ export const softwareList: Software[] = [
       "Internet connection for driver downloads",
     ],
 
-    screenshots: [],
+    screenshots: [
+      "/software/driver-booster-ejemplo-1.png",
+      "/software/driver-booster-ejemplo-2.png",
+      "/software/driver-booster-ejemplo-3.jpg",
+    ],
+
 
     features: [
       "Automatically detects outdated drivers",
@@ -121,7 +126,12 @@ export const softwareList: Software[] = [
       "Compatible audio and video hardware",
     ],
 
-    screenshots: [],
+    screenshots: [
+      "/software/vlc-media-player-ejemplo-1.jpg",
+      "/software/vlc-media-player-ejemplo-2.png",
+      "/software/vlc-media-player-ejemplo-3.png",
+    ],
+
 
     features: [
       "Supports many audio and video formats",
@@ -180,10 +190,10 @@ export const softwareList: Software[] = [
       "Sufficient storage space for archives and extracted files",
     ],
 
-        screenshots: [
-      "/software/driver-booster-ejemplo-1.png",
-      "/software/driver-booster-ejemplo-2.png",
-      "/software/driver-booster-ejemplo-3.jpg",
+    screenshots: [
+      "/software/winrar-ejemplo-1.png",
+      "/software/winrar-ejemplo-2.png",
+      "/software/winrar-ejemplo-3.png",
     ],
 
     features: [
