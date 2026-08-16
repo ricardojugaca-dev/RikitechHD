@@ -5,6 +5,7 @@ import { Menu, Search, X } from "lucide-react";
 import { useState } from "react";
 
 import ThemeToggle from "@/components/ui/ThemeToggle";
+import SearchModal from "@/components/layout/SearchModal";
 
 const navigation = [
   {
@@ -27,12 +28,14 @@ const navigation = [
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const closeMenu = () => {
     setIsMenuOpen(false);
   };
 
   return (
+  <>
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur">
 
       {/* Desktop / Main Navbar */}
@@ -64,13 +67,14 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
 
           {/* Search */}
-          <Link
-            href="/search"
+          <button
+            type="button"
+            onClick={() => setIsSearchOpen(true)}
             aria-label="Buscar"
             className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
           >
             <Search className="h-5 w-5" />
-          </Link>
+          </button>
 
           {/* Theme */}
           <ThemeToggle />
@@ -128,5 +132,10 @@ export default function Navbar() {
       )}
 
     </header>
+          <SearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+      />
+ </>
   );
 }
