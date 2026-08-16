@@ -472,12 +472,12 @@ export default async function SoftwarePage({
                 {software.operatingSystem}.
               </p>
 
-              <button
-                type="button"
-                className="mt-6 rounded-xl bg-black px-8 py-3.5 font-semibold text-white transition hover:opacity-90 dark:bg-white dark:text-black"
+              <a
+                href="https://rikitech.infinityfree.me/"
+                className="mt-6 inline-block rounded-xl bg-black px-8 py-3.5 font-semibold text-white transition hover:opacity-90 dark:bg-white dark:text-black"
               >
                 Download
-              </button>
+              </a>
 
             </div>
           </section>
