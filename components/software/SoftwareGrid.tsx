@@ -34,14 +34,15 @@ export default function SoftwareGrid() {
   return (
     <div>
       {/* Software Grid */}
-      <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-        {currentSoftware.map((software) => (
-          <SoftwareCard
-            key={software.id}
-            software={software}
-          />
-        ))}
-      </div>
+        <div className="grid w-full min-w-0 grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+          {currentSoftware.map((software, index) => (
+            <SoftwareCard
+              key={software.id}
+              software={software}
+              priority={index < 3} // <-- Agregamos priority a los primeros 3 elementos
+            />
+          ))}
+        </div>
 
       {/* Pagination */}
       {totalPages > 1 && (

@@ -5,10 +5,12 @@ import type { Software } from "@/data/software";
 
 type SoftwareCardProps = {
   software: Software;
+  priority?: boolean; // <-- Prop opcional para las primeras imágenes
 };
 
 export default function SoftwareCard({
   software,
+  priority = false, // Por defecto es false
 }: SoftwareCardProps) {
   return (
     <article className="group min-w-0 overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -24,6 +26,8 @@ export default function SoftwareCard({
             src={software.image}
             alt={software.name}
             fill
+            priority={priority} // <-- Se usa aquí
+            loading={priority ? "eager" : "lazy"} // <-- Agrega esta línea
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />

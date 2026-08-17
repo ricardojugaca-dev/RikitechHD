@@ -3,15 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 
 import { softwareList } from "@/data/software";
 
+const MAX_RESULTS = 9;
+
 export default function SearchBar() {
   const [query, setQuery] = useState("");
-  const [hasScroll, setHasScroll] = useState(false);
-
-  const resultsContainerRef = useRef<HTMLDivElement>(null);
 
   const results = useMemo(() => {
     const search = query.trim().toLowerCase();
@@ -31,31 +30,14 @@ export default function SearchBar() {
     });
   }, [query]);
 
-  useEffect(() => {
-    const element = resultsContainerRef.current;
+  const hasMoreResults = results.length > MAX_RESULTS;
 
-    if (!element) {
-      setHasScroll(false);
-      return;
-    }
-
-    const checkScroll = () => {
-      setHasScroll(element.scrollHeight > element.clientHeight);
-    };
-
-    checkScroll();
-
-    window.addEventListener("resize", checkScroll);
-
-    return () => {
-      window.removeEventListener("resize", checkScroll);
-    };
-  }, [results]);
+  const visibleResults = results.slice(0, MAX_RESULTS);
 
   return (
     <div className="relative mx-auto mt-10 w-full max-w-2xl">
 
-      {/* Search input */}
+      {/* Search Input */}
       <div className="flex items-center rounded-xl border border-border bg-card px-4 shadow-sm transition-shadow focus-within:ring-2 focus-within:ring-foreground/10">
 
         <Search className="mr-3 h-5 w-5 shrink-0 text-muted" />
@@ -65,68 +47,94 @@ export default function SearchBar() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search software, drivers and tutorials..."
+          aria-label="Search software"
           className="h-14 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted"
         />
 
       </div>
 
-      {/* Search results */}
+      {/* Search Results */}
       {query.trim() && (
-        <div className="absolute left-0 right-0 top-full z-40 mt-2 overflow-hidden rounded-xl border border-border bg-background shadow-xl">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-border bg-background shadow-2xl">
 
-          {results.length > 0 ? (
+          {visibleResults.length > 0 ? (
             <>
-              {/* Results list */}
+
+              {/* Results */}
               <div
-                ref={resultsContainerRef}
-                className="max-h-[360px] overflow-y-auto"
+                className={
+                  hasMoreResults
+                    ? "max-h-[70vh] overflow-y-auto"
+                    : ""
+                }
               >
-                {results.map((software) => (
-                  <Link
-                    key={software.slug}
-                    href={`/software/${software.slug}`}
-                    onClick={() => setQuery("")}
-                    className="flex gap-4 border-b border-border p-4 transition-colors last:border-b-0 hover:bg-black/5 dark:hover:bg-white/5"
-                  >
-                    {/* Image */}
-                    <div className="h-16 w-24 shrink-0 overflow-hidden rounded-lg">
-                      <Image
-                        src={software.image}
-                        alt={`${software.name} ${software.version}`}
-                        width={1280}
-                        height={720}
-                        className="h-full w-full object-cover"
-                      />
-                    </div>
 
-                    {/* Information */}
-                    <div className="min-w-0">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-blue-600 dark:text-blue-400">
-                        {software.category}
-                      </p>
+                <div className="grid grid-cols-1 gap-1 p-3 sm:grid-cols-2 lg:grid-cols-3">
 
-                      <h3 className="mt-1 truncate font-semibold">
-                        {software.name}
-                      </h3>
+                  {visibleResults.map((software) => (
+                    <Link
+                      key={software.slug}
+                      href={`/software/${software.slug}`}
+                      onClick={() => setQuery("")}
+                      className="group flex min-w-0 items-center gap-3 rounded-lg p-3 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+                    >
 
-                      <p className="mt-1 text-sm text-muted">
-                        Version {software.version}
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+                      {/* Image */}
+                      <div className="relative h-12 w-20 shrink-0 overflow-hidden rounded-md bg-black/5 dark:bg-white/5">
+
+                        <Image
+                          src={software.image}
+                          alt={software.name}
+                          fill
+                          sizes="80px"
+                          className="object-cover transition-transform duration-200 group-hover:scale-105"
+                        />
+
+                      </div>
+
+                      {/* Information */}
+                      <div className="min-w-0">
+
+                        <h3 className="truncate text-sm font-semibold">
+                          {software.name}
+                        </h3>
+
+                        <p className="mt-1 truncate text-xs text-muted">
+                          {software.category} · Version {software.version}
+                        </p>
+
+                      </div>
+
+                    </Link>
+                  ))}
+
+                </div>
+
               </div>
 
-              {/* Scroll indicator */}
-              {hasScroll && (
-                <div className="border-t border-border px-4 py-3 text-center text-xs text-muted">
-                  Scroll for more results ↓
+              {/* View All */}
+              {hasMoreResults && (
+                <div className="border-t border-border px-4 py-3">
+
+                  <Link
+                    href={`/search?query=${encodeURIComponent(query)}`}
+                    onClick={() => setQuery("")}
+                    className="flex items-center justify-center text-sm font-semibold transition-colors hover:text-blue-500"
+                  >
+                    View all results
+                    <span className="ml-1">
+                      →
+                    </span>
+                  </Link>
+
                 </div>
               )}
+
             </>
           ) : (
-            /* No results */
+            /* No Results */
             <div className="p-6 text-center">
+
               <p className="font-medium">
                 No results found
               </p>
@@ -134,6 +142,7 @@ export default function SearchBar() {
               <p className="mt-1 text-sm text-muted">
                 No software matches &quot;{query}&quot;.
               </p>
+
             </div>
           )}
 

@@ -2,12 +2,12 @@ import SearchBar from "./SearchBar";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden border-b border-border">
+    <section className="relative border-b border-border">
 
       {/* Background decoration */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10"
+        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
       >
         <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
       </div>
@@ -32,6 +32,7 @@ export default function Hero() {
           Find software, drivers, tutorials and useful technology
           resources in one place.
         </p>
+
         <SearchBar />
 
       </div>
