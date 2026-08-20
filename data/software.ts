@@ -227,7 +227,7 @@ export const softwareList: Software[] = [
     description:
       "Utility software designed to help clean unnecessary files and manage certain aspects of Windows.",
 
-    image: "/software/CCleaner.png",
+    image: "/software/Ccleaner.png",
 
     developer: "Piriform",
     operatingSystem: "Windows",
