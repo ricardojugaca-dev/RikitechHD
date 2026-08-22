@@ -49,6 +49,11 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: "/Logo.png",      // <-- Con 'L' mayúscula igual que tu archivo
+    shortcut: "/Logo.png",
+    apple: "/Logo.png",
+  },
 };
 
 export default function RootLayout({

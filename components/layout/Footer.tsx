@@ -107,7 +107,7 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
 
         {/* Footer columns */}
-        <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-4">
+        <div className="grid items-start gap-8 md:grid-cols-2 lg:grid-cols-5">
 
           {/* Columna 1: Logo + descripción */}
           <div className="-mt-2">
@@ -121,7 +121,7 @@ export default function Footer() {
                 alt="RIKITECH"
                 width={40}
                 height={40}
-              />  
+              />
 
               <span className="text-sm font-semibold uppercase tracking-wider">
                 RIKITECH
@@ -174,7 +174,52 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columna 4: Legal */}
+          {/* Columna 4: Company */}
+          <div className="md:-ml-6">
+            <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
+              Company
+            </h3>
+
+            <ul className="mt-4 space-y-2">
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  Privacy Policy
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  Terms & Conditions
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  License (EULA)
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="#"
+                  className="text-sm text-muted transition-colors hover:text-foreground"
+                >
+                  Brand Guidelines
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Columna 5: Legal */}
           <div className="md:-ml-6">
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Legal
