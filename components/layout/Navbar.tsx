@@ -63,7 +63,7 @@ const navigation: NavItem[] = [
   },
 ];
 // Cambia a 'false' si solo quieres ver el logo sin texto
-const SHOW_BRAND_TEXT = false;
+const SHOW_BRAND_TEXT = true;
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
