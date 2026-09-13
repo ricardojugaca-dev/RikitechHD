@@ -20,12 +20,14 @@ interface TelegramFeedProps {
   apiUrl: string;
   channelUsername: string;
   onSubscribersLoaded?: (subscribers: string) => void;
+  searchTerm?: string;
 }
 
 export default function TelegramFeed({
   apiUrl,
   channelUsername,
   onSubscribersLoaded,
+  searchTerm = "",
 }: TelegramFeedProps) {
   const [posts, setPosts] = useState<TelegramPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +40,10 @@ export default function TelegramFeed({
     fetch(apiUrl)
       .then((res) => res.json())
       .then((data) => {
-        // ⭐ Nuevo formato: { posts: [...], subscribers: "..." }
         const postsData = Array.isArray(data) ? data : data.posts || [];
         setPosts(postsData);
         if (postsData.length === 0) setHasMore(false);
 
-        // Notificar al padre el número de suscriptores
         if (data.subscribers && onSubscribersLoaded) {
           onSubscribersLoaded(data.subscribers);
         }
@@ -67,7 +67,6 @@ export default function TelegramFeed({
     try {
       const res = await fetch(`${apiUrl}?before=${oldestPostId}`);
       const data = await res.json();
-      // Soportar ambos formatos
       const newPosts = Array.isArray(data) ? data : data.posts || [];
 
       if (newPosts.length > 0) {
@@ -106,40 +105,55 @@ export default function TelegramFeed({
     }
   };
 
+  // ⭐ Filtro local por búsqueda
+  const filteredPosts = posts.filter((post) => {
+    if (!searchTerm.trim()) return true;
+    const term = searchTerm.toLowerCase();
+    const cleanText = post.htmlText.replace(/<[^>]*>/g, "").toLowerCase();
+    return cleanText.includes(term);
+  });
+
   return (
     <div
       ref={scrollRef}
       onScroll={handleScroll}
-      className="max-h-[400px] overflow-y-auto p-2 space-y-2"
+      className="max-h-[400px] overflow-y-auto p-2 space-y-2 telegram-wallpaper"
     >
       {loadingMore && (
-        <div className="text-center text-[10px] text-zinc-500 py-2">
+        <div className="text-center text-[10px] text-zinc-400 py-2">
           Cargando mensajes anteriores...
         </div>
       )}
 
-      {!hasMore && posts.length > 0 && (
-        <div className="text-center text-[10px] text-zinc-500 py-2">
+      {!hasMore && posts.length > 0 && !searchTerm && (
+        <div className="text-center text-[10px] text-zinc-400 py-2">
           No hay más publicaciones
         </div>
       )}
 
       {loading && (
-        <div className="text-center text-xs text-zinc-400 py-4">
+        <div className="text-center text-xs text-zinc-300 py-4">
           Cargando publicaciones...
         </div>
       )}
 
       {!loading && posts.length === 0 && (
-        <div className="text-center text-xs text-zinc-400 py-4">
+        <div className="text-center text-xs text-zinc-300 py-4">
           No hay publicaciones todavía.
         </div>
       )}
 
-      {posts.map((post) => (
+      {/* Mensaje cuando la búsqueda no tiene resultados */}
+      {!loading && searchTerm && filteredPosts.length === 0 && (
+        <div className="text-center text-xs text-zinc-300 py-4">
+          No se encontraron posts con &quot;{searchTerm}&quot;
+        </div>
+      )}
+
+      {filteredPosts.map((post) => (
         <div
           key={post.id}
-          className="rounded-lg bg-[#1e2c3a] border border-[#253341] shadow-sm overflow-hidden"
+          className="rounded-lg bg-[#182533]/95 border border-[#253341] shadow-md overflow-hidden"
         >
           {post.image && (
             <a
