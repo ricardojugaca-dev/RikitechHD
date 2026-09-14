@@ -153,7 +153,7 @@ export default function TelegramFeed({
       {filteredPosts.map((post) => (
         <div
           key={post.id}
-          className="rounded-lg bg-[#182533]/95 border border-[#253341] shadow-md overflow-hidden"
+          className="rounded-lg bg-card/95 border border-border shadow-sm overflow-hidden"
         >
           {post.image && (
             <a
@@ -174,38 +174,63 @@ export default function TelegramFeed({
           {post.htmlText && post.htmlText.trim() && (
             <div className="px-2.5 pt-1.5 pb-0.5">
               <div
-                className="telegram-text text-[12.5px] text-zinc-100 leading-[1.5] break-words whitespace-pre-line"
+                className="telegram-text text-[12.5px] text-foreground leading-[1.5] break-words whitespace-pre-line"
                 dangerouslySetInnerHTML={{ __html: post.htmlText }}
               />
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-2 px-2.5 py-1">
-            <div className="flex items-center gap-1 flex-wrap">
+          <div className="flex items-center justify-between gap-2 px-3 py-1.5">
+            {/* Reacciones (izquierda) */}
+            <div className="flex items-center gap-1.5 flex-wrap">
               {post.reactions.length > 0 &&
                 post.reactions.map((r, i) => (
                   <span
                     key={i}
-                    className="inline-flex items-center gap-1 rounded-full bg-[#2b5278] px-2 py-0.5 text-[10.5px] text-white"
+                    className="inline-flex items-center gap-1 rounded-full bg-[#2b5278] px-2.5 py-1 text-[12.5px] text-white"
                   >
                     <span>{r.emoji}</span>
-                    <span className="font-medium">{r.count}</span>
+                    <span className="font-semibold">{r.count}</span>
                   </span>
                 ))}
             </div>
 
-            <div className="flex items-center gap-2 text-[10.5px] text-zinc-400 shrink-0">
+            {/* Vistas y hora (derecha) */}
+            <div className="flex items-center gap-3 text-[12.5px] text-muted shrink-0">
               {post.views && (
-                <span className="inline-flex items-center gap-1">
-                  <span>👁</span>
+                <span className="inline-flex items-center gap-1.5">
                   <span>{post.views}</span>
+                  <EyeIcon className="h-4 w-4 text-zinc-400" />
                 </span>
               )}
-              <span>{formatTime(post.date)}</span>
+              <span className="tabular-nums">{formatTime(post.date)}</span>
             </div>
           </div>
         </div>
       ))}
     </div>
+  );
+}
+
+function EyeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+      />
+    </svg>
   );
 }

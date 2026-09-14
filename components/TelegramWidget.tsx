@@ -22,9 +22,9 @@ export default function TelegramWidget({
   const [searchTerm, setSearchTerm] = useState("");
 
   return (
-    <div className="overflow-hidden rounded-lg border border-[#253341] shadow-lg">
+    <div className="overflow-hidden rounded-lg border border-border bg-card shadow-lg">
       {/* Header tipo Telegram */}
-      <div className="flex items-center justify-between border-b border-[#0f1620] bg-[#17212b] p-3 gap-2">
+      <div className="flex items-center justify-between border-b border-border bg-card p-3 gap-2">
         <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <div className="h-9 w-9 rounded-full bg-white flex items-center justify-center shadow-md shrink-0 overflow-hidden border border-[#253341]">
             <img
@@ -34,10 +34,10 @@ export default function TelegramWidget({
             />
           </div>
           <div className="min-w-0 flex-1">
-            <h5 className="text-[12.5px] font-bold text-white truncate">
+            <h5 className="text-[12.5px] font-bold text-card-foreground truncate">
               {channelName}
             </h5>
-            <span className="text-[10.5px] text-[#7d8e9e]">{subscribers}</span>
+            <span className="text-[10.5px] text-muted">{subscribers}</span>
           </div>
         </div>
 
@@ -65,7 +65,7 @@ export default function TelegramWidget({
             className={`h-8 w-8 flex items-center justify-center rounded-full transition shrink-0 ${
               isSearchOpen
                 ? "bg-[#2b5278] text-white"
-                : "text-[#7d8e9e] hover:text-white hover:bg-[#2b5278]"
+                : "text-muted hover:text-foreground hover:bg-muted-bg"
             }`}
           >
             <SearchIcon className="h-4 w-4" />
@@ -75,23 +75,24 @@ export default function TelegramWidget({
 
       {/* Buscador desplegable */}
       {isSearchOpen && (
-        <div className="border-b border-[#0f1620] bg-[#17212b] p-2">
-          <div className="relative">
-            <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-[#7d8e9e]" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar en los posts cargados..."
-              autoFocus
-              className="w-full rounded-md bg-[#0e1621] border border-[#253341] pl-8 pr-8 py-1.5 text-[12px] text-white placeholder:text-[#7d8e9e] focus:outline-none focus:border-[#2481cc]"
-            />
+        <div className="border-b border-border bg-card p-2">
+            <div className="relative">
+              <SearchIcon className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Buscar en los posts cargados..."
+                autoFocus
+                className="w-full rounded-md bg-background border border-border pl-8 pr-8 py-1.5 text-[12px] text-foreground placeholder:text-muted focus:outline-none focus:border-[#2481cc]"
+              />
+            
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm("")}
                 aria-label="Limpiar búsqueda"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-[#7d8e9e] hover:text-white text-xs"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted hover:text-foreground text-xs"
               >
                 ✕
               </button>
@@ -101,7 +102,7 @@ export default function TelegramWidget({
       )}
 
       {/* Contenedor del feed con el fondo de patrón */}
-      <div className="telegram-wallpaper">
+      <div className="telegram-wallpaper min-h-[400px]">
         <TelegramFeed
           apiUrl={apiUrl}
           channelUsername={channelUsername}
