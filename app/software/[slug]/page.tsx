@@ -76,6 +76,27 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
     setCommentSuccess(true);
     setTimeout(() => setCommentSuccess(false), 4000);
   };
+  // Formatear fecha como "19 de agosto de 2026" o "19 DE AGOSTO DE 2026"
+  const formatDateLong = (dateStr: string | undefined) => {
+    if (!dateStr) return "FECHA DESCONOCIDA";
+    
+    // Si ya viene en formato texto (ej. "18 DE AGOSTO DE 2026"), lo devolvemos tal cual
+    if (isNaN(Date.parse(dateStr))) return dateStr.toUpperCase();
+    
+    try {
+      const d = new Date(dateStr);
+      const day = d.getDate();
+      const months = [
+        "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+        "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+      ];
+      const month = months[d.getMonth()];
+      const year = d.getFullYear();
+      return `${day} DE ${month} DE ${year}`;
+    } catch {
+      return dateStr.toUpperCase();
+    }
+  };
 
   const relatedSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 4);
   const recentSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 5);
@@ -506,31 +527,39 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                 </div>
               </div>
 
-        
-
-
             {/* Últimas Publicaciones */}
-            <div className="overflow-hidden rounded-xs border border-border bg-card p-4 shadow-lg">
+            <div className="overflow-hidden rounded-lg border border-border bg-card p-4 shadow-lg">
               <h4 className="text-xs font-extrabold uppercase tracking-wider text-card-foreground border-b border-border pb-2.5">
                 Últimas Publicaciones
               </h4>
-              <div className="mt-3 space-y-3.5">
-                {recentSoftware.map((item: any) => (
-                  <Link key={item.slug} href={"/software/" + item.slug} className="group flex items-start gap-3">
-                    <div className="h-12 w-12 shrink-0 overflow-hidden rounded-xs bg-muted-bg border border-border p-1 flex items-center justify-center">
-                      <img src={item.icon || item.image} alt={item.name} className="h-full w-full object-cover rounded-xs" />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <h5 className="text-[11.5px] font-bold text-card-foreground group-hover:text-blue-500 line-clamp-2 leading-snug dark:group-hover:text-blue-400">
-                        {item.name} {item.version}
-                      </h5>
-                      <span className="text-[10px] text-muted font-semibold uppercase tracking-wider block mt-1">
-                        {item.authorDate || item.lastUpdated || "21 DE MAYO DE 2024"}
-                      </span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              <div className="mt-3 space-y-3">
+              {recentSoftware.map((item: any) => (
+                <Link
+                  key={item.slug}
+                  href={"/software/" + item.slug}
+                  className="group flex items-start gap-2.5 rounded-md p-2 transition hover:bg-muted-bg/60"
+                >
+                  {/* Imagen un poco más grande */}
+                  <div className="aspect-video w-20 shrink-0 overflow-hidden rounded-md bg-muted-bg border border-border flex items-center justify-center">
+                    <img
+                      src={item.icon || item.image}
+                      alt={item.name}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+
+                  {/* Texto */}
+                  <div className="min-w-0 flex-1">
+                    <h5 className="text-[13px] font-bold text-card-foreground group-hover:text-blue-500 transition line-clamp-2 leading-snug dark:group-hover:text-blue-400">
+                      {item.name} {item.version}
+                    </h5>
+                    <span className="text-[10.5px] text-muted font-semibold uppercase tracking-wider block mt-1">
+                      {formatDateLong(item.authorDate || item.lastUpdated)}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
             </div>
 
             {/* Widget Telegram - Feed en vivo */}
