@@ -34,13 +34,9 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
   const [commentWebsite, setCommentWebsite] = useState("");
   const [commentText, setCommentText] = useState("");
   const [saveInfo, setSaveInfo] = useState(false);
-  const [commentsList, setCommentsList] = useState([
-    {
-      name: "Carlos Mendoza",
-      text: "¡Excelente aporte! Descargado e instalado a la primera sin ningún problema. Totalmente recomendado.",
-      date: "19 DE AGOSTO DE 2026",
-    },
-  ]);
+  const [commentsList, setCommentsList] = useState<
+  { name: string; text: string; date: string }[]
+    >([]);
   const [commentSuccess, setCommentSuccess] = useState(false);
 
   const handleLike = () => {
@@ -383,21 +379,24 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                   <Link
                     key={item.slug}
                     href={"/software/" + item.slug}
-                    className="group overflow-hidden rounded-xs border border-border bg-card transition hover:bg-card-hover"
+                    className="group overflow-hidden rounded-lg border border-border bg-card transition hover:bg-card-hover"
                   >
-                    <div className="relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-b from-muted-bg to-card p-4 flex items-center justify-center">
+                    {/* Imagen 16:9 expandida al 100% */}
+                    <div className="aspect-video w-full overflow-hidden bg-muted-bg">
                       <img
                         src={item.boxImage || item.image}
                         alt={item.name}
-                        className="max-h-[140px] w-auto object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
                       />
                     </div>
+
+                    {/* Texto con formato de fecha largo */}
                     <div className="p-3.5">
                       <h4 className="text-xs font-bold text-card-foreground group-hover:text-blue-500 transition line-clamp-2 leading-snug dark:group-hover:text-blue-400">
                         {item.name} {item.version}, {item.subtitleEdition || item.description.slice(0, 40)}
                       </h4>
                       <p className="mt-1.5 text-[10px] font-semibold uppercase tracking-wider text-muted">
-                        {item.authorDate || item.lastUpdated || "18 DE AGOSTO DE 2026"}
+                        {formatDateLong(item.authorDate || item.lastUpdated)}
                       </p>
                     </div>
                   </Link>
@@ -417,34 +416,63 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
               </div>
 
               {commentsList.length > 0 && (
-                <div className="mt-6 space-y-3">
-                  {commentsList.map((c, i) => (
-                    <div key={i} className="rounded-xs border border-border bg-card p-3.5">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="font-bold text-card-foreground">{c.name}</span>
-                        <span className="text-[10px] text-muted">{c.date}</span>
+                  <div className="mt-6 space-y-3">
+                    {commentsList.map((c, i) => (
+                      <div key={i} className="rounded-lg border border-border bg-card p-3.5">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="font-bold text-card-foreground">{c.name}</span>
+                          <span className="text-[10px] text-muted">{c.date}</span>
+                        </div>
+                        <p className="mt-1.5 text-xs text-foreground/90">{c.text}</p>
                       </div>
-                      <p className="mt-1.5 text-xs text-foreground/90">{c.text}</p>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
 
               <form onSubmit={handleCommentSubmit} className="mt-6 space-y-4">
                 {commentSuccess && (
-                  <div className="rounded-xs bg-emerald-100 border border-emerald-300 p-3 text-xs text-emerald-800 dark:bg-emerald-950/60 dark:border-emerald-800/60 dark:text-emerald-300">
+                  <div className="rounded-lg bg-emerald-100 border border-emerald-300 p-3 text-xs text-emerald-800 dark:bg-emerald-950/60 dark:border-emerald-800/60 dark:text-emerald-300">
                     ¡Comentario publicado exitosamente!
                   </div>
                 )}
                 <div className="grid gap-3 sm:grid-cols-3">
-                  <input type="text" required placeholder="Nombre *" value={commentName} onChange={(e) => setCommentName(e.target.value)} className="w-full rounded-xs border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden" />
-                  <input type="email" placeholder="Email" value={commentEmail} onChange={(e) => setCommentEmail(e.target.value)} className="w-full rounded-xs border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden" />
-                  <input type="url" placeholder="Sitio web" value={commentWebsite} onChange={(e) => setCommentWebsite(e.target.value)} className="w-full rounded-xs border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="Nombre *"
+                    value={commentName}
+                    onChange={(e) => setCommentName(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={commentEmail}
+                    onChange={(e) => setCommentEmail(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                  />
+                  <input
+                    type="url"
+                    placeholder="Sitio web"
+                    value={commentWebsite}
+                    onChange={(e) => setCommentWebsite(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                  />
                 </div>
                 <div>
-                  <textarea rows={5} required placeholder="Escribe tu comentario aquí..." value={commentText} onChange={(e) => setCommentText(e.target.value)} className="w-full rounded-xs border border-border bg-background p-3.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y" />
+                  <textarea
+                    rows={5}
+                    required
+                    placeholder="Escribe tu comentario aquí..."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background p-3.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y"
+                  />
                 </div>
-                <button type="submit" className="rounded-xs bg-foreground border border-border px-6 py-2.5 text-xs font-black uppercase tracking-wider text-background shadow-md hover:opacity-90 transition">
+                <button
+                  type="submit"
+                  className="rounded-lg bg-foreground border border-border px-6 py-2.5 text-xs font-black uppercase tracking-wider text-background shadow-md hover:opacity-90 transition"
+                >
                   PUBLICAR COMENTARIO
                 </button>
               </form>
@@ -456,9 +484,13 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
           {/* COLUMNA DERECHA: SIDEBAR STICKY */}
             <aside className="space-y-6 lg:sticky lg:top-8">
               {/* Avatar del sitio */}
-              <div className="overflow-hidden rounded-xs border border-border bg-card p-5 text-center shadow-lg">
-                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-md border-2 border-white/10">
-                  <span className="text-3xl font-black">d</span>
+              <div className="overflow-hidden rounded-lg border border-border bg-card p-5 text-center shadow-lg">
+                <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white shadow-md border-2 border-border overflow-hidden">
+                  <img
+                    src="/Logo.png"
+                    alt="Logo del sitio"
+                    className="h-full w-full object-contain p-1"
+                  />
                 </div>
                 <p className="mt-4 text-xs text-foreground/80 leading-relaxed">
                   Descargaspcpro es un sitio web de software y noticias de tecnología, con guías completas de instalación.
