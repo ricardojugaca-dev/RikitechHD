@@ -37,18 +37,20 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
   const [commentText, setCommentText] = useState("");
   const [saveInfo, setSaveInfo] = useState(false);
   const [commentsList, setCommentsList] = useState<
-    {
-      id: number;
-      name: string;
-      email?: string | null;
-      website?: string | null;
-      text: string;
-      created_at: string;
-      post_slug: string;
-    }[]
-  >([]);
-const [commentsLoading, setCommentsLoading] = useState(true);
+  {
+    id: number;
+    name: string;
+    email?: string | null;
+    website?: string | null;
+    text: string;
+    created_at: string;
+    post_slug: string;
+    parent_id: number | null;   // ⭐ NUEVA LÍNEA
+  }[]
+>([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentSuccess, setCommentSuccess] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
 
      // Cargar comentarios SOLO del post actual
     useEffect(() => {
@@ -88,42 +90,84 @@ const [commentsLoading, setCommentsLoading] = useState(true);
     setTimeout(() => setCopiedPassword(false), 2000);
   };
 
-  const handleCommentSubmit = async (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!commentText.trim() || !commentName.trim()) return;
+  // Estado para el texto de las respuestas inline
+const [replyText, setReplyText] = useState("");
+const [replyName, setReplyName] = useState("");       // ⭐ NUEVO
+const [replyEmail, setReplyEmail] = useState("");     // ⭐ NUEVO
 
-      const { data, error } = await supabase
-        .from("comments")
-        .insert([
-          {
-            name: commentName,
-            email: commentEmail || null,
-            website: commentWebsite || null,
-            text: commentText,
-            post_slug: currentSlug,   // ⭐ Guarda el slug del post
-          },
-        ])
-        .select()
-        .single();
+// Función para publicar una respuesta a un comentario específico
+const handleReplySubmit = async (parentId: number) => {
+  if (!replyText.trim() || !replyName.trim()) {
+    alert("Necesitas escribir tu nombre y la respuesta");
+    return;
+  }
 
-      if (error) {
-        console.error("Error al publicar comentario:", error);
-        return;
-      }
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([
+      {
+        name: replyName,          // ⭐ Usa replyName
+        email: replyEmail || null, // ⭐ Usa replyEmail
+        website: null,
+        text: replyText,
+        post_slug: currentSlug,
+        parent_id: parentId,
+      },
+    ])
+    .select()
+    .single();
 
-      // Añadir el nuevo comentario al inicio de la lista
-      if (data) {
-        setCommentsList([data, ...commentsList]);
-      }
+  if (error) {
+    console.error("Error al publicar respuesta:", error);
+    return;
+  }
 
-      // Limpiar formulario
-      setCommentText("");
-      setCommentName("");
-      setCommentEmail("");
-      setCommentWebsite("");
-      setCommentSuccess(true);
-      setTimeout(() => setCommentSuccess(false), 4000);
-    };
+  if (data) {
+    setCommentsList([...commentsList, data]);
+  }
+
+  // Limpiar SOLO los campos de la respuesta (no los del formulario principal)
+  setReplyText("");
+  setReplyName("");
+  setReplyEmail("");
+  setReplyingTo(null);
+  setCommentSuccess(true);
+  setTimeout(() => setCommentSuccess(false), 4000);
+};
+
+// Función original para comentarios principales (sin parent_id)
+const handleCommentSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  if (!commentText.trim() || !commentName.trim()) return;
+
+  const { data, error } = await supabase
+    .from("comments")
+    .insert([
+      {
+        name: commentName,
+        email: commentEmail || null,
+        website: commentWebsite || null,
+        text: commentText,
+        post_slug: currentSlug,
+        parent_id: null,   // ⭐ Es un comentario principal
+      },
+    ])
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error al publicar comentario:", error);
+    return;
+  }
+
+  if (data) {
+    setCommentsList([...commentsList, data]);
+  }
+
+  setCommentText("");
+  setCommentSuccess(true);
+  setTimeout(() => setCommentSuccess(false), 4000);
+};
   // Formatear fecha como "19 de agosto de 2026" o "19 DE AGOSTO DE 2026"
   const formatDateLong = (dateStr: string | undefined) => {
     if (!dateStr) return "FECHA DESCONOCIDA";
@@ -145,6 +189,148 @@ const [commentsLoading, setCommentsLoading] = useState(true);
       return dateStr.toUpperCase();
     }
   };
+  // Formatear fecha como tiempo relativo: "HACE 5 HORAS", "HACE 2 DÍAS", etc.
+  const formatTimeAgo = (dateStr: string | undefined) => {
+    if (!dateStr) return "FECHA DESCONOCIDA";
+    
+    try {
+      const d = new Date(dateStr);
+      const now = new Date();
+      const diffMs = now.getTime() - d.getTime();
+      const diffMin = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMin < 1) return "AHORA MISMO";
+      if (diffMin < 60) return `HACE ${diffMin} MINUTO${diffMin !== 1 ? "S" : ""}`;
+      if (diffHours < 24) return `HACE ${diffHours} HORA${diffHours !== 1 ? "S" : ""}`;
+      if (diffDays < 7) return `HACE ${diffDays} DÍA${diffDays !== 1 ? "S" : ""}`;
+      if (diffDays < 30) return `HACE ${Math.floor(diffDays / 7)} SEMANA${Math.floor(diffDays / 7) !== 1 ? "S" : ""}`;
+      if (diffDays < 365) return `HACE ${Math.floor(diffDays / 30)} MES${Math.floor(diffDays / 30) !== 1 ? "ES" : ""}`;
+      return `HACE ${Math.floor(diffDays / 365)} AÑO${Math.floor(diffDays / 365) !== 1 ? "S" : ""}`;
+    } catch {
+      return dateStr.toUpperCase();
+    }
+  };
+  // Función recursiva para renderizar comentarios con sus respuestas
+const renderComment = (
+  comment: typeof commentsList[0],
+  allComments: typeof commentsList,
+  depth: number = 0
+): React.ReactNode => {
+  // Buscar todas las respuestas a este comentario
+  const replies = allComments.filter((c) => c.parent_id === comment.id);
+
+  return (
+    <div key={comment.id} style={{ marginLeft: depth > 0 ? "2rem" : "0" }}>
+      <div className="flex gap-3 mb-3">
+        {/* Avatar */}
+        <img
+          src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${encodeURIComponent(comment.name)}&size=40`}
+          alt={comment.name}
+          className="h-10 w-10 rounded-full shrink-0 bg-muted-bg"
+        />
+
+        <div className="flex-1 min-w-0">
+          {/* Header: nombre + botón responder */}
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <span className="font-bold text-card-foreground text-sm">
+              {comment.name}
+            </span>
+            <button
+              type="button"
+              onClick={() =>
+                setReplyingTo(replyingTo === comment.id ? null : comment.id)
+              }
+              className="text-[10px] font-bold uppercase tracking-wider text-blue-500 hover:text-blue-400 transition"
+            >
+              ↩ Responder
+            </button>
+          </div>
+
+          {/* Fecha relativa */}
+          <span className="text-[10px] text-muted font-semibold uppercase tracking-wider block mt-0.5">
+            {formatTimeAgo(comment.created_at)}
+          </span>
+
+          {/* Texto del comentario */}
+          <p className="mt-2 text-xs text-foreground/90 leading-relaxed">
+            {comment.text}
+          </p>
+
+          <p className="mt-1 text-[10px] text-muted italic">
+            Your comment is awaiting moderation.
+          </p>
+
+          {/* Formulario de respuesta inline */}
+          {replyingTo === comment.id && (
+            <div className="mt-3 pl-2 border-l-2 border-blue-500/30 space-y-2">
+              {/* Inputs de nombre y email para la respuesta */}
+              <div className="grid gap-2 sm:grid-cols-2">
+                <input
+                  type="text"
+                  required
+                  placeholder="Tu nombre *"
+                  value={replyName}
+                  onChange={(e) => setReplyName(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                />
+                <input
+                  type="email"
+                  placeholder="Tu email (opcional)"
+                  value={replyEmail}
+                  onChange={(e) => setReplyEmail(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                />
+              </div>
+
+              {/* Textarea de la respuesta */}
+              <textarea
+                rows={3}
+                value={replyText}
+                onChange={(e) => setReplyText(e.target.value)}
+                placeholder={`Responder a ${comment.name}...`}
+                className="w-full rounded-lg border border-border bg-background p-2.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y"
+              />
+
+              {/* Botones */}
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => handleReplySubmit(comment.id)}
+                  className="rounded-lg bg-blue-600 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-blue-500 transition"
+                >
+                  Enviar respuesta
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setReplyingTo(null);
+                    setReplyText("");
+                    setReplyName("");
+                    setReplyEmail("");
+                  }}
+                  className="rounded-lg border border-border px-3 py-1.5 text-[11px] font-bold text-muted hover:text-foreground transition"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Renderizar respuestas recursivamente */}
+      {replies.length > 0 && (
+        <div className="ml-6 border-l-2 border-border/30 pl-3">
+          {replies.map((reply) =>
+            renderComment(reply, allComments, depth + 1)
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 
   const relatedSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 4);
   const recentSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 5);
@@ -467,27 +653,20 @@ const [commentsLoading, setCommentsLoading] = useState(true);
                 </span>
               </div>
 
-              {commentsLoading ? (
+                {commentsLoading ? (
                     <div className="text-center text-xs text-muted py-4">
                       Cargando comentarios...
                     </div>
                   ) : commentsList.length > 0 ? (
-                    <div className="mt-6 space-y-3">
-                      {commentsList.map((c) => (
-                        <div key={c.id} className="rounded-lg border border-border bg-card p-3.5">
-                          <div className="flex items-center justify-between text-xs">
-                            <span className="font-bold text-card-foreground">{c.name}</span>
-                            <span className="text-[10px] text-muted">
-                              {formatDateLong(c.created_at)}
-                            </span>
-                          </div>
-                          <p className="mt-1.5 text-xs text-foreground/90">{c.text}</p>
-                        </div>
-                      ))}
+                    <div className="mt-6 space-y-4">
+                      {/* Mostrar solo comentarios principales (parent_id === null) */}
+                      {commentsList
+                        .filter((c) => c.parent_id === null)
+                        .map((comment) => renderComment(comment, commentsList))}
                     </div>
                   ) : (
                     <div className="text-center text-xs text-muted py-4">
-                      No hay comentarios todavía.
+                      No hay comentarios todavía. ¡Sé el primero!
                     </div>
                   )}
 
