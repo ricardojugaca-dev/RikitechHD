@@ -1,13 +1,15 @@
 // app/software/[slug]/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { softwareList } from "@/data/software";
 import TelegramFeed from "@/components/TelegramFeed";
 import TelegramWidget from "@/components/TelegramWidget";
+import { supabase } from "@/lib/supabase";
+
 
 interface SoftwarePageProps {
   params: Promise<{ slug: string }>;
@@ -35,9 +37,39 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
   const [commentText, setCommentText] = useState("");
   const [saveInfo, setSaveInfo] = useState(false);
   const [commentsList, setCommentsList] = useState<
-  { name: string; text: string; date: string }[]
-    >([]);
+    {
+      id: number;
+      name: string;
+      email?: string | null;
+      website?: string | null;
+      text: string;
+      created_at: string;
+      post_slug: string;
+    }[]
+  >([]);
+const [commentsLoading, setCommentsLoading] = useState(true);
   const [commentSuccess, setCommentSuccess] = useState(false);
+
+     // Cargar comentarios SOLO del post actual
+    useEffect(() => {
+      async function loadComments() {
+        setCommentsLoading(true);
+        const { data, error } = await supabase
+          .from("comments")
+          .select("*")
+          .eq("post_slug", currentSlug)   // ⭐ Filtro por slug del post
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error cargando comentarios:", error);
+        } else if (data) {
+          setCommentsList(data);
+        }
+        setCommentsLoading(false);
+      }
+
+      loadComments();
+    }, [currentSlug]);   // ⭐ Se recarga si cambia el slug
 
   const handleLike = () => {
     if (!hasLiked) {
@@ -56,22 +88,42 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
     setTimeout(() => setCopiedPassword(false), 2000);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!commentText.trim() || !commentName.trim()) return;
+  const handleCommentSubmit = async (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!commentText.trim() || !commentName.trim()) return;
 
-    setCommentsList([
-      ...commentsList,
-      {
-        name: commentName,
-        text: commentText,
-        date: "Recién publicado",
-      },
-    ]);
-    setCommentText("");
-    setCommentSuccess(true);
-    setTimeout(() => setCommentSuccess(false), 4000);
-  };
+      const { data, error } = await supabase
+        .from("comments")
+        .insert([
+          {
+            name: commentName,
+            email: commentEmail || null,
+            website: commentWebsite || null,
+            text: commentText,
+            post_slug: currentSlug,   // ⭐ Guarda el slug del post
+          },
+        ])
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error al publicar comentario:", error);
+        return;
+      }
+
+      // Añadir el nuevo comentario al inicio de la lista
+      if (data) {
+        setCommentsList([data, ...commentsList]);
+      }
+
+      // Limpiar formulario
+      setCommentText("");
+      setCommentName("");
+      setCommentEmail("");
+      setCommentWebsite("");
+      setCommentSuccess(true);
+      setTimeout(() => setCommentSuccess(false), 4000);
+    };
   // Formatear fecha como "19 de agosto de 2026" o "19 DE AGOSTO DE 2026"
   const formatDateLong = (dateStr: string | undefined) => {
     if (!dateStr) return "FECHA DESCONOCIDA";
@@ -415,19 +467,29 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                 </span>
               </div>
 
-              {commentsList.length > 0 && (
-                  <div className="mt-6 space-y-3">
-                    {commentsList.map((c, i) => (
-                      <div key={i} className="rounded-lg border border-border bg-card p-3.5">
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="font-bold text-card-foreground">{c.name}</span>
-                          <span className="text-[10px] text-muted">{c.date}</span>
+              {commentsLoading ? (
+                    <div className="text-center text-xs text-muted py-4">
+                      Cargando comentarios...
+                    </div>
+                  ) : commentsList.length > 0 ? (
+                    <div className="mt-6 space-y-3">
+                      {commentsList.map((c) => (
+                        <div key={c.id} className="rounded-lg border border-border bg-card p-3.5">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="font-bold text-card-foreground">{c.name}</span>
+                            <span className="text-[10px] text-muted">
+                              {formatDateLong(c.created_at)}
+                            </span>
+                          </div>
+                          <p className="mt-1.5 text-xs text-foreground/90">{c.text}</p>
                         </div>
-                        <p className="mt-1.5 text-xs text-foreground/90">{c.text}</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center text-xs text-muted py-4">
+                      No hay comentarios todavía.
+                    </div>
+                  )}
 
               <form onSubmit={handleCommentSubmit} className="mt-6 space-y-4">
                 {commentSuccess && (
