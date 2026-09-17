@@ -172,7 +172,7 @@ const handleCommentSubmit = async (e: React.FormEvent) => {
   const formatDateLong = (dateStr: string | undefined) => {
     if (!dateStr) return "FECHA DESCONOCIDA";
     
-    // Si ya viene en formato texto (ej. "18 DE AGOSTO DE 2026"), lo devolvemos tal cual
+    // Si ya viene en formato texto sin día (ej. "August 2026"), mostrarlo capitalizado
     if (isNaN(Date.parse(dateStr))) return dateStr.toUpperCase();
     
     try {
@@ -184,6 +184,13 @@ const handleCommentSubmit = async (e: React.FormEvent) => {
       ];
       const month = months[d.getMonth()];
       const year = d.getFullYear();
+      
+      // Si el día es 1, probablemente significa que la fecha original no tenía día
+      // Ej: "August 2026" → Date = 1 de agosto de 2026
+      if (day === 1) {
+        return `${month} DE ${year}`;
+      }
+      
       return `${day} DE ${month} DE ${year}`;
     } catch {
       return dateStr.toUpperCase();
@@ -372,7 +379,7 @@ const renderComment = (
           {/* COLUMNA IZQUIERDA: CONTENIDO */}
           <article className="min-w-0 space-y-6">
             <div>
-              <span className="inline-block rounded-xs bg-foreground px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wider text-background border border-border">
+              <span className="inline-block rounded-lg bg-blue-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white">
                 {software.category || "SOFTWARE"}
               </span>
             </div>
@@ -382,27 +389,24 @@ const renderComment = (
             </h1>
 
             <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted">
-              <span>BY</span>
-              <span className="text-[#2b88ff] font-bold">{author}</span>
-              <span className="text-muted/60">·</span>
-              <span className="text-muted">{postDate}</span>
+              <span>AUTOR</span>
+              <span className="text-[#2b88ff] font-bold">rikitechhd</span>
+              <span className="text-muted/60">-</span>
+              <span className="text-muted">{formatDateLong(postDate)}</span>
             </div>
 
             {/* Caja 3D Mockup */}
-            <div className="relative mx-auto flex w-full max-w-[560px] items-center justify-center overflow-hidden rounded-md border border-border bg-gradient-to-b from-muted-bg to-card p-6 sm:p-10 shadow-2xl">
-              <div className="relative z-10 flex flex-col items-center">
-                <img
-                  src={(software as any).boxImage || software.image}
-                  alt={software.name + " 3D Box"}
-                  className="max-h-[360px] w-auto object-contain drop-shadow-[0_20px_25px_rgba(0,0,0,0.5)] rounded-xs transition-transform duration-300 hover:scale-105"
-                />
-                <div className="mt-3 text-center">
-                  <span className="inline-block rounded-xs bg-blue-600/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-500 border border-blue-500/30 dark:text-blue-400">
-                    {software.version} • {software.license}
-                  </span>
-                </div>
-              </div>
-            </div>
+            {/* Imagen principal expandida */}
+                {/* Imagen principal expandida */}
+                  <div className="relative w-full overflow-hidden rounded-lg border border-border bg-muted-bg shadow-xl">
+                    <div className="aspect-video w-full">
+                      <img
+                        src={(software as any).boxImage || software.image}
+                        alt={software.name + " 3D Box"}
+                        className="h-full w-full object-cover transition-transform duration-300 hover:scale-105"
+                      />
+                    </div>
+                  </div>
 
             {/* Textos */}
             <div className="space-y-4 text-[14px] leading-relaxed text-foreground/90">
