@@ -384,16 +384,38 @@ const renderComment = (
               </span>
             </div>
 
-            <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl lg:text-[34px] lg:leading-[1.2]">
-              {software.name} {software.version} {(software as any).subtitleEdition || "Pre-Activado, Diseño gráfico"}
-            </h1>
+             <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl lg:text-[34px] lg:leading-[1.2]">
+                {software.name} {software.version}
+                {software.subtitleEdition && (
+                  <> - {software.subtitleEdition}</>
+                )}
+              </h1>
 
-            <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted">
-              <span>AUTOR</span>
-              <span className="text-[#2b88ff] font-bold">rikitechhd</span>
-              <span className="text-muted/60">-</span>
-              <span className="text-muted">{formatDateLong(postDate)}</span>
-            </div>
+                {/* Descripción corta */}
+                <p className="text-sm text-muted leading-relaxed">
+                  {software.description}
+                </p>
+
+                {/* Metadata con iconos */}
+                <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
+                  {/* Autor */}
+                  <div className="flex items-center gap-1.5">
+                    <UserIcon className="h-3.5 w-3.5" />
+                    <span className="font-semibold text-foreground">RikiTech</span>
+                  </div>
+
+                  {/* Fecha */}
+                  <div className="flex items-center gap-1.5">
+                    <CalendarIcon className="h-3.5 w-3.5" />
+                    <span>{formatDateLong(postDate)}</span>
+                  </div>
+
+                  {/* Comentarios */}
+                  <div className="flex items-center gap-1.5">
+                    <CommentIcon className="h-3.5 w-3.5" />
+                    <span>{commentsList.length} comentarios</span>
+                  </div>
+                </div>
 
             {/* Caja 3D Mockup */}
             {/* Imagen principal expandida */}
@@ -410,7 +432,7 @@ const renderComment = (
 
             {/* Textos */}
             <div className="space-y-4 text-[14px] leading-relaxed text-foreground/90">
-              <p>{software.description}</p>
+            
               <p>
                 {(software as any).fullOverview || "En lo que respecta a este software, se confirma que es la herramienta lider para optimizar tus tareas diarias con maxima productividad y herramientas intuitivas."}
               </p>
@@ -878,4 +900,55 @@ function TelegramIcon({ className }: { className?: string }) {
 }
 function WhatsAppIcon({ className }: { className?: string }) {
   return (<svg className={className} viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.122.554 4.188 1.608 6.012L.07 24l6.129-1.57c1.761.961 3.753 1.47 5.832 1.47 6.646 0 12.031-5.385 12.031-12.031C24.062 5.385 18.677 0 12.031 0zm0 22.023c-1.848 0-3.619-.497-5.163-1.428l-.37-.22-3.837.982 1.024-3.74-.241-.383c-1.024-1.63-1.564-3.518-1.564-5.464 0-5.541 4.509-10.05 10.051-10.05 5.542 0 10.05 4.509 10.05 10.05 0 5.541-4.508 10.05-10.05 10.05z" /></svg>);
+}
+function UserIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function CalendarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function CommentIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
 }

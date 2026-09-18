@@ -3,6 +3,7 @@ export type Software = {
   name: string;
   slug: string;
   version: string;
+  subtitleEdition?: string;   // ⭐ NUEVA LÍNEA
   category: string;
   schemaCategory?: string;
   description: string;
@@ -31,6 +32,7 @@ export const softwareList: Software[] = [
     name: "Driver Booster",
     slug: "driver-booster",
     version: "13.6",
+    subtitleEdition: "Actualizador de controladores",  // ← Añade esto
     category: "Drivers",
     schemaCategory: "UtilitiesApplication",
 
@@ -43,7 +45,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Freemium",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-15",
 
     whatsNew: [
       "Updated driver detection and update capabilities",
@@ -95,6 +97,7 @@ export const softwareList: Software[] = [
     name: "VLC Media Player",
     slug: "vlc",
     version: "3.0",
+    subtitleEdition: "Reproductor multimedia",  // ⭐ Añadir
     category: "Multimedia",
     schemaCategory: "MultimediaApplication",
 
@@ -107,7 +110,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Open Source",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-10",
 
     whatsNew: [
       "Continued improvements to media playback",
@@ -159,6 +162,7 @@ export const softwareList: Software[] = [
     name: "WinRAR",
     slug: "winrar",
     version: "7.x",
+    subtitleEdition: "Compresor de archivos",  // ⭐ Añadir
     category: "Utilities",
     schemaCategory: "UtilitiesApplication",
 
@@ -171,7 +175,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Trial",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-08",
 
     whatsNew: [
       "Improved archive management capabilities",
@@ -221,6 +225,7 @@ export const softwareList: Software[] = [
     name: "CCleaner",
     slug: "ccleaner",
     version: "6.x",
+    subtitleEdition: "Limpiador de PC",  // ⭐ Añadir
     category: "Utilities",
     schemaCategory: "UtilitiesApplication",
 
@@ -233,7 +238,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Freemium",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-05",
 
     whatsNew: [
       "Performance and stability improvements",
@@ -281,6 +286,7 @@ export const softwareList: Software[] = [
     name: "Advanced SystemCare",
     slug: "advanced-systemcare",
     version: "18.x",
+    subtitleEdition: "Optimizador de sistema",  // ⭐ Añadir
     category: "Utilities",
     schemaCategory: "UtilitiesApplication",
 
@@ -293,7 +299,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Freemium",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-12",
 
     whatsNew: [
       "Improved system optimization",
@@ -341,6 +347,7 @@ export const softwareList: Software[] = [
     name: "Internet Download Manager",
     slug: "internet-download-manager",
     version: "6.x",
+    subtitleEdition: "Gestor de descargas",  // ⭐ Añadir
     category: "Internet",
     schemaCategory: "UtilitiesApplication",
 
@@ -353,7 +360,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Trial",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-18",
 
     whatsNew: [
       "Download performance improvements",
@@ -402,6 +409,7 @@ export const softwareList: Software[] = [
     name: "VirtualDJ",
     slug: "virtualdj",
     version: "2026",
+    subtitleEdition: "Software de DJ",  // ⭐ Añadir
     category: "Multimedia",
     schemaCategory: "MultimediaApplication",
 
@@ -414,7 +422,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Freemium",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-20",
 
     whatsNew: [
       "Performance improvements",
@@ -463,6 +471,7 @@ export const softwareList: Software[] = [
     name: "Smart Defrag",
     slug: "smart-defrag",
     version: "10.x",
+    subtitleEdition: "Desfragmentador de disco",  // ⭐ Añadir
     category: "Utilities",
     schemaCategory: "UtilitiesApplication",
 
@@ -475,7 +484,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Freemium",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-14",
 
     whatsNew: [
       "Improved disk optimization capabilities",
@@ -524,6 +533,7 @@ export const softwareList: Software[] = [
     name: "Cinema 4D",
     slug: "cinema-4d",
     version: "2026",
+    subtitleEdition: "Modelado y animación 3D",  // ⭐ Añadir
     category: "Graphics & Design",
     schemaCategory: "MultimediaApplication",
 
@@ -536,7 +546,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Commercial",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-22",
 
     whatsNew: [
       "Improvements to 3D modeling and animation workflows",
@@ -589,6 +599,7 @@ export const softwareList: Software[] = [
     name: "Microsoft Office 2024",
     slug: "microsoft-office-2024",
     version: "2024",
+    subtitleEdition: "Suite de productividad",  // ⭐ Añadir
     category: "Office & Productivity",
     schemaCategory: "BusinessApplication",
 
@@ -601,7 +612,7 @@ export const softwareList: Software[] = [
     operatingSystem: "Windows",
     license: "Commercial",
     size: "—",
-    lastUpdated: "August 2026",
+    lastUpdated: "2026-08-01",
 
     whatsNew: [
       "Improved productivity features",
