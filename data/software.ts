@@ -3,13 +3,16 @@ export type Software = {
   name: string;
   slug: string;
   version: string;
-  subtitleEdition?: string;   // ⭐ NUEVA LÍNEA
+  subtitleEdition?: string;
   category: string;
   schemaCategory?: string;
   description: string;
+  fullOverview?: string;
   image: string;
   developer: string;
   operatingSystem: string;
+  architecture?: string;   // ⭐ NUEVA LÍNEA
+  language?: string;       // ⭐ NUEVA LÍNEA
   license: string;
   size: string;
   lastUpdated: string;
@@ -37,14 +40,18 @@ export const softwareList: Software[] = [
     schemaCategory: "UtilitiesApplication",
 
     description:
-      "Tool designed to detect and update outdated drivers on Windows.",
+      "Mantén tu PC funcionando al máximo con una herramienta rápida, segura y sencilla para encontrar e instalar los controladores más recientes.",
+
+    fullOverview: "Driver Booster es una de las herramientas más prácticas para mantener los controladores de tu equipo actualizados. Su sistema analiza tu ordenador, identifica los componentes que necesitan atención y propone una instalación sencilla. Esta edición incluye una experiencia sin límites, mayor velocidad de descarga y funciones pensadas para que tu equipo se mantenga estable.",  // ⭐ Añadir
 
     image: "/software/Driver-Booster.png",
 
     developer: "IObit",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Freemium",
-    size: "—",
+    size: "28.4 MB",
     lastUpdated: "2026-08-15",
 
     whatsNew: [
@@ -104,12 +111,16 @@ export const softwareList: Software[] = [
     description:
       "Free and open-source multimedia player for many audio and video formats.",
 
+    fullOverview: "VLC Media Player es un reproductor multimedia gratuito y de código abierto que soporta prácticamente todos los formatos de audio y video existentes. No necesita códecs adicionales y funciona en múltiples plataformas. Es una herramienta ligera, versátil y sin publicidad que se ha convertido en el estándar para reproducir cualquier archivo multimedia.",  // ⭐ Añadir
+
     image: "/software/Vlc-Media-Player.png",
 
     developer: "VideoLAN",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Open Source",
-    size: "—",
+    size: "42.6 MB",
     lastUpdated: "2026-08-10",
 
     whatsNew: [
@@ -169,12 +180,16 @@ export const softwareList: Software[] = [
     description:
       "Popular file compression and archive management software.",
 
+    fullOverview: "WinRAR es uno de los compresores de archivos más utilizados en Windows. Permite crear y extraer archivos en múltiples formatos (RAR, ZIP, 7z, etc.), dividir archivos grandes en volúmenes y protegerlos con contraseña. Su integración con el explorador de Windows y su capacidad de recuperar archivos dañados lo convierten en una herramienta indispensable.",  // ⭐ Añadir
+
     image: "/software/Winrar.png",
 
     developer: "RARLAB",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Trial",
-    size: "—",
+    size: "3.8 MB",
     lastUpdated: "2026-08-08",
 
     whatsNew: [
@@ -232,12 +247,16 @@ export const softwareList: Software[] = [
     description:
       "Utility software designed to help clean unnecessary files and manage certain aspects of Windows.",
 
+    fullOverview: "CCleaner es una herramienta que ayuda a eliminar archivos innecesarios, limpiar el registro de Windows y proteger tu privacidad. Su sistema analiza tu equipo, identifica archivos temporales, cachés y datos residuales que ocupan espacio, y los elimina de forma segura. Es ideal para mantener tu PC rápida y libre de basura digital.",  // ⭐ Añadir
+
     image: "/software/Ccleaner.png",
 
     developer: "Piriform",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Freemium",
-    size: "—",
+    size: "30.2 MB",
     lastUpdated: "2026-08-05",
 
     whatsNew: [
@@ -293,12 +312,16 @@ export const softwareList: Software[] = [
     description:
       "Windows utility software designed to help optimize system performance and manage common maintenance tasks.",
 
+    fullOverview: "Advanced SystemCare es una suite completa de optimización para Windows. Incluye herramientas para limpiar el sistema, optimizar el rendimiento, proteger la privacidad y monitorear el equipo en tiempo real. Su interfaz intuitiva permite a cualquier usuario mantener su PC en óptimas condiciones con un solo clic.",  // ⭐ Añadir
+
     image: "/software/Advanced-System-Care.png",
 
     developer: "IObit",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Freemium",
-    size: "—",
+    size: "52.1 MB",
     lastUpdated: "2026-08-12",
 
     whatsNew: [
@@ -354,12 +377,16 @@ export const softwareList: Software[] = [
     description:
       "Download manager for Windows designed to organize and accelerate file downloads.",
 
+    fullOverview: "Internet Download Manager (IDM) es un gestor de descargas que acelera las transferencias hasta 5 veces. Se integra con los principales navegadores, permite reanudar descargas interrumpidas, programar descargas y organizar archivos automáticamente por categorías. Es una herramienta esencial para quienes descargan archivos grandes con frecuencia.",  // ⭐ Añadir
+
     image: "/software/Internet-Download-Manager.png",
 
     developer: "Tonec",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Trial",
-    size: "—",
+    size: "12.5 MB",
     lastUpdated: "2026-08-18",
 
     whatsNew: [
@@ -416,12 +443,16 @@ export const softwareList: Software[] = [
     description:
       "DJ software for mixing music, managing tracks and creating live mixes.",
 
+    fullOverview: "VirtualDJ es un software profesional para DJ que permite mezclar música, gestionar pistas y crear mezclas en vivo. Incluye efectos de audio, samplers, loops y soporte para controladores MIDI. Es utilizado tanto por DJs principiantes como profesionales por su potencia y flexibilidad.",  // ⭐ Añadir
+
     image: "/software/Virtual-DJ.png",
 
     developer: "Atomix Productions",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Freemium",
-    size: "—",
+    size: "185 MB",
     lastUpdated: "2026-08-20",
 
     whatsNew: [
@@ -478,12 +509,17 @@ export const softwareList: Software[] = [
     description:
       "Disk optimization utility designed to help defragment and optimize storage drives on Windows.",
 
+      
+    fullOverview: "Smart Defrag es una herramienta de optimización de discos que desfragmenta y organiza los archivos de tu equipo para mejorar la velocidad de lectura y escritura. Su sistema de optimización automática mantiene tus discos en buen estado sin intervención manual, prolongando la vida útil del hardware.",  // ⭐ Añadir
+
     image: "/software/Smart-Defrag.png",
 
     developer: "IObit",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Freemium",
-    size: "—",
+    size: "18.7 MB",
     lastUpdated: "2026-08-14",
 
     whatsNew: [
@@ -540,12 +576,16 @@ export const softwareList: Software[] = [
     description:
       "Professional 3D modeling, animation, simulation and rendering software for creating digital content and visual effects.",
 
+    fullOverview: "Cinema 4D es una de las herramientas de modelado, animación y renderizado 3D más utilizadas en la industria del diseño y los efectos visuales. Su interfaz intuitiva y su potente motor de renderizado lo hacen ideal para motion graphics, publicidad y producción audiovisual. Es utilizado por estudios y artistas de todo el mundo.",  // ⭐ Añadir
+
     image: "/software/Cinema-4D.png",
 
     developer: "Maxon",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Commercial",
-    size: "—",
+    size: "1.2 GB",
     lastUpdated: "2026-08-22",
 
     whatsNew: [
@@ -606,12 +646,16 @@ export const softwareList: Software[] = [
     description:
       "Productivity suite for Windows that includes applications for creating documents, spreadsheets, presentations and other professional work.",
 
+    fullOverview: "Microsoft Office 2024 es la suite de productividad más utilizada del mundo. Incluye Word para documentos, Excel para hojas de cálculo, PowerPoint para presentaciones y otras herramientas esenciales para el trabajo profesional y personal. Su compatibilidad con formatos estándar y su integración con la nube la convierten en la opción preferida por empresas y usuarios.",  // ⭐ Añadir
+
     image: "/software/Microsoft-Office.png",
 
     developer: "Microsoft",
     operatingSystem: "Windows",
+    architecture: "64 bits",
+    language: "Español / Multi",
     license: "Commercial",
-    size: "—",
+    size: "4.5 GB",
     lastUpdated: "2026-08-01",
 
     whatsNew: [

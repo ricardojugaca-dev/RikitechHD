@@ -84,7 +84,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
   };
 
   const handleCopyPassword = () => {
-    const pwd = (software as any).password || "www.descargaspcpro.net";
+    const pwd = (software as any).password || "www.rikitechhd.net";
     navigator.clipboard.writeText(pwd);
     setCopiedPassword(true);
     setTimeout(() => setCopiedPassword(false), 2000);
@@ -168,146 +168,167 @@ const handleCommentSubmit = async (e: React.FormEvent) => {
   setCommentSuccess(true);
   setTimeout(() => setCommentSuccess(false), 4000);
 };
-  // Formatear fecha como "19 de agosto de 2026" o "19 DE AGOSTO DE 2026"
-  const formatDateLong = (dateStr: string | undefined) => {
-    if (!dateStr) return "FECHA DESCONOCIDA";
+  // Formatear fecha como "18 DE AGOSTO DE 2026"
+const formatDateLong = (dateStr: string | undefined) => {
+  if (!dateStr) return "FECHA DESCONOCIDA";
+  
+  if (isNaN(Date.parse(dateStr))) return dateStr.toUpperCase();
+  
+  try {
+    const d = new Date(dateStr);
+    const day = d.getDate();
+    const months = [
+      "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
+      "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
+    ];
+    const month = months[d.getMonth()];
+    const year = d.getFullYear();
     
-    // Si ya viene en formato texto sin día (ej. "August 2026"), mostrarlo capitalizado
-    if (isNaN(Date.parse(dateStr))) return dateStr.toUpperCase();
-    
-    try {
-      const d = new Date(dateStr);
-      const day = d.getDate();
-      const months = [
-        "ENERO", "FEBRERO", "MARZO", "ABRIL", "MAYO", "JUNIO",
-        "JULIO", "AGOSTO", "SEPTIEMBRE", "OCTUBRE", "NOVIEMBRE", "DICIEMBRE"
-      ];
-      const month = months[d.getMonth()];
-      const year = d.getFullYear();
-      
-      // Si el día es 1, probablemente significa que la fecha original no tenía día
-      // Ej: "August 2026" → Date = 1 de agosto de 2026
-      if (day === 1) {
-        return `${month} DE ${year}`;
-      }
-      
-      return `${day} DE ${month} DE ${year}`;
-    } catch {
-      return dateStr.toUpperCase();
+    if (day === 1) {
+      return `${month} DE ${year}`;
     }
+    
+    return `${day} DE ${month} DE ${year}`;
+  } catch {
+    return dateStr.toUpperCase();
+  }
+};
+  // Calcular tiempo de lectura basado en el contenido
+  const calculateReadTime = (software: any): number => {
+    // Concatenar todo el texto del artículo
+    const allText = [
+      software.description || "",
+      software.fullOverview || "",
+      ...(software.features || []),
+      ...(software.whatsNew || []),
+      ...(software.versionHighlights || []),
+      ...(software.systemRequirements || []),
+    ].join(" ");
+
+    // Contar palabras (promedio de lectura: 200 palabras/minuto)
+    const wordCount = allText.trim().split(/\s+/).length;
+    const minutes = Math.ceil(wordCount / 200);
+
+    // Mínimo 1 minuto
+    return Math.max(1, minutes);
   };
   // Formatear fecha como tiempo relativo: "HACE 5 HORAS", "HACE 2 DÍAS", etc.
   const formatTimeAgo = (dateStr: string | undefined) => {
-    if (!dateStr) return "FECHA DESCONOCIDA";
+  if (!dateStr) return "Fecha desconocida";
+  
+  try {
+    const d = new Date(dateStr);
+    const now = new Date();
+    const diffMs = now.getTime() - d.getTime();
+    const diffMin = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+    const diffDays = Math.floor(diffMs / 86400000);
     
-    try {
-      const d = new Date(dateStr);
-      const now = new Date();
-      const diffMs = now.getTime() - d.getTime();
-      const diffMin = Math.floor(diffMs / 60000);
-      const diffHours = Math.floor(diffMs / 3600000);
-      const diffDays = Math.floor(diffMs / 86400000);
-      
-      if (diffMin < 1) return "AHORA MISMO";
-      if (diffMin < 60) return `HACE ${diffMin} MINUTO${diffMin !== 1 ? "S" : ""}`;
-      if (diffHours < 24) return `HACE ${diffHours} HORA${diffHours !== 1 ? "S" : ""}`;
-      if (diffDays < 7) return `HACE ${diffDays} DÍA${diffDays !== 1 ? "S" : ""}`;
-      if (diffDays < 30) return `HACE ${Math.floor(diffDays / 7)} SEMANA${Math.floor(diffDays / 7) !== 1 ? "S" : ""}`;
-      if (diffDays < 365) return `HACE ${Math.floor(diffDays / 30)} MES${Math.floor(diffDays / 30) !== 1 ? "ES" : ""}`;
-      return `HACE ${Math.floor(diffDays / 365)} AÑO${Math.floor(diffDays / 365) !== 1 ? "S" : ""}`;
-    } catch {
-      return dateStr.toUpperCase();
-    }
-  };
+    if (diffMin < 1) return "Ahora mismo";
+    if (diffMin < 60) return `Hace ${diffMin} minuto${diffMin !== 1 ? "s" : ""}`;
+    if (diffHours < 24) return `Hace ${diffHours} hora${diffHours !== 1 ? "s" : ""}`;
+    if (diffDays < 7) return `Hace ${diffDays} día${diffDays !== 1 ? "s" : ""}`;
+    if (diffDays < 30) return `Hace ${Math.floor(diffDays / 7)} semana${Math.floor(diffDays / 7) !== 1 ? "s" : ""}`;
+    if (diffDays < 365) return `Hace ${Math.floor(diffDays / 30)} mes${Math.floor(diffDays / 30) !== 1 ? "es" : ""}`;
+    return `Hace ${Math.floor(diffDays / 365)} año${Math.floor(diffDays / 365) !== 1 ? "s" : ""}`;
+  } catch {
+    return dateStr;
+  }
+};
   // Función recursiva para renderizar comentarios con sus respuestas
 const renderComment = (
   comment: typeof commentsList[0],
   allComments: typeof commentsList,
   depth: number = 0
 ): React.ReactNode => {
-  // Buscar todas las respuestas a este comentario
   const replies = allComments.filter((c) => c.parent_id === comment.id);
 
+  // Iniciales del nombre (ej. "Juan Díaz" → "JD")
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  };
+
+  // Color del avatar basado en el nombre
+  const getAvatarColor = (name: string) => {
+    const colors = [
+      "bg-blue-500/20 text-blue-400",
+      "bg-emerald-500/20 text-emerald-400",
+      "bg-purple-500/20 text-purple-400",
+      "bg-amber-500/20 text-amber-400",
+      "bg-rose-500/20 text-rose-400",
+      "bg-cyan-500/20 text-cyan-400",
+    ];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
   return (
-    <div key={comment.id} style={{ marginLeft: depth > 0 ? "2rem" : "0" }}>
-      <div className="flex gap-3 mb-3">
-        {/* Avatar */}
-        <img
-          src={`https://api.dicebear.com/9.x/bottts-neutral/svg?seed=${encodeURIComponent(comment.name)}&size=40`}
-          alt={comment.name}
-          className="h-10 w-10 rounded-full shrink-0 bg-muted-bg"
-        />
+    <div key={comment.id} style={{ marginLeft: depth > 0 ? "2.5rem" : "0" }}>
+      <div className="flex gap-3 mb-4">
+        {/* Avatar con iniciales */}
+        <div
+          className={`flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-bold shrink-0 ${getAvatarColor(comment.name)}`}
+        >
+          {getInitials(comment.name)}
+        </div>
 
         <div className="flex-1 min-w-0">
-          {/* Header: nombre + botón responder */}
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <span className="font-bold text-card-foreground text-sm">
+          {/* Header: nombre + fecha */}
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="font-bold text-foreground text-[14px]">
               {comment.name}
             </span>
-            <button
-              type="button"
-              onClick={() =>
-                setReplyingTo(replyingTo === comment.id ? null : comment.id)
-              }
-              className="text-[10px] font-bold uppercase tracking-wider text-blue-500 hover:text-blue-400 transition"
-            >
-              ↩ Responder
-            </button>
+            <span className="text-[12px] text-muted">
+              {formatTimeAgo(comment.created_at)}
+            </span>
           </div>
 
-          {/* Fecha relativa */}
-          <span className="text-[10px] text-muted font-semibold uppercase tracking-wider block mt-0.5">
-            {formatTimeAgo(comment.created_at)}
-          </span>
-
           {/* Texto del comentario */}
-          <p className="mt-2 text-xs text-foreground/90 leading-relaxed">
+          <p className="mt-1.5 text-[14px] text-foreground/85 leading-relaxed">
             {comment.text}
           </p>
 
-          <p className="mt-1 text-[10px] text-muted italic">
-            Your comment is awaiting moderation.
-          </p>
+          {/* Botón responder */}
+          <button
+            type="button"
+            onClick={() =>
+              setReplyingTo(replyingTo === comment.id ? null : comment.id)
+            }
+            className="mt-1.5 text-[12px] font-bold text-blue-500 hover:text-blue-400 transition"
+          >
+            {replyingTo === comment.id ? "Cancelar" : "Responder"}
+          </button>
 
           {/* Formulario de respuesta inline */}
           {replyingTo === comment.id && (
-            <div className="mt-3 pl-2 border-l-2 border-blue-500/30 space-y-2">
-              {/* Inputs de nombre y email para la respuesta */}
-              <div className="grid gap-2 sm:grid-cols-2">
-                <input
-                  type="text"
-                  required
-                  placeholder="Tu nombre *"
-                  value={replyName}
-                  onChange={(e) => setReplyName(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
-                />
-                <input
-                  type="email"
-                  placeholder="Tu email (opcional)"
-                  value={replyEmail}
-                  onChange={(e) => setReplyEmail(e.target.value)}
-                  className="w-full rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
-                />
-              </div>
-
-              {/* Textarea de la respuesta */}
+            <div className="mt-3 space-y-2">
+              <input
+                type="text"
+                required
+                placeholder="Tu nombre *"
+                value={replyName}
+                onChange={(e) => setReplyName(e.target.value)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+              />
               <textarea
                 rows={3}
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
                 placeholder={`Responder a ${comment.name}...`}
-                className="w-full rounded-lg border border-border bg-background p-2.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y"
+                className="w-full rounded-lg border border-border bg-background p-3 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y"
               />
-
-              {/* Botones */}
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={() => handleReplySubmit(comment.id)}
-                  className="rounded-lg bg-blue-600 px-3 py-1.5 text-[11px] font-bold text-white hover:bg-blue-500 transition"
+                  className="rounded-lg bg-blue-600 px-4 py-1.5 text-[12px] font-bold text-white hover:bg-blue-500 transition"
                 >
-                  Enviar respuesta
+                  Publicar respuesta
                 </button>
                 <button
                   type="button"
@@ -317,7 +338,7 @@ const renderComment = (
                     setReplyName("");
                     setReplyEmail("");
                   }}
-                  className="rounded-lg border border-border px-3 py-1.5 text-[11px] font-bold text-muted hover:text-foreground transition"
+                  className="rounded-lg border border-border px-4 py-1.5 text-[12px] font-bold text-muted hover:text-foreground transition"
                 >
                   Cancelar
                 </button>
@@ -327,9 +348,9 @@ const renderComment = (
         </div>
       </div>
 
-      {/* Renderizar respuestas recursivamente */}
+      {/* Respuestas anidadas */}
       {replies.length > 0 && (
-        <div className="ml-6 border-l-2 border-border/30 pl-3">
+        <div className="ml-3 border-l-2 border-border/40 pl-4">
           {replies.map((reply) =>
             renderComment(reply, allComments, depth + 1)
           )}
@@ -343,7 +364,7 @@ const renderComment = (
   const recentSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 5);
   const author = (software as any).authorName || "DESCARGASPCPRO";
   const postDate = (software as any).authorDate || software.lastUpdated || "18 DE AGOSTO DE 2026";
-  const password = (software as any).password || "www.descargaspcpro.net";
+  const password = (software as any).password || "www.rikitechhd.net";
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased selection:bg-blue-600 selection:text-white">
@@ -378,11 +399,30 @@ const renderComment = (
 
           {/* COLUMNA IZQUIERDA: CONTENIDO */}
           <article className="min-w-0 space-y-6">
-            <div>
-              <span className="inline-block rounded-lg bg-blue-600 px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider text-white">
-                {software.category || "SOFTWARE"}
-              </span>
-            </div>
+              {/* Breadcrumb */}
+              <nav className="flex items-center gap-2 text-xs text-muted">
+                <Link href="/" className="hover:text-foreground transition">
+                  Inicio
+                </Link>
+                <span className="text-muted/50">/</span>
+                <Link href="/software" className="hover:text-foreground transition">
+                  Software
+                </Link>
+                <span className="text-muted/50">/</span>
+                <span className="text-foreground font-medium">{software.name}</span>
+              </nav>
+
+              {/* Categoría + tiempo de lectura */}
+              <div className="flex flex-wrap items-center gap-5 text-xs">
+                <span className="font-extrabold uppercase tracking-wider text-blue-400">
+                  {software.category || "SOFTWARE"}
+                </span>
+
+                <div className="flex items-center gap-1.5 text-muted uppercase tracking-wider font-semibold">
+                  <ClockIcon className="h-3.5 w-3.5" />
+                  <span>{calculateReadTime(software)} min de lectura</span>
+                </div>
+              </div>
 
              <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl lg:text-[34px] lg:leading-[1.2]">
                 {software.name} {software.version}
@@ -392,15 +432,22 @@ const renderComment = (
               </h1>
 
                 {/* Descripción corta */}
-                <p className="text-sm text-muted leading-relaxed">
+                <p className="text-[15px] text-muted leading-7 max-w-2xl">
                   {software.description}
                 </p>
 
-                {/* Metadata con iconos */}
-                <div className="flex flex-wrap items-center gap-4 text-xs text-muted">
-                  {/* Autor */}
-                  <div className="flex items-center gap-1.5">
-                    <UserIcon className="h-3.5 w-3.5" />
+                {/* Línea superior */}
+              <div className="border-t border-border" />
+
+              {/* Metadata con iconos + iniciales + corazón */}
+              <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-muted py-2">
+                {/* Grupo izquierdo: iniciales + autor + fecha + comentarios */}
+                <div className="flex flex-wrap items-center gap-4">
+                  {/* Iniciales RT */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-950 text-[12px] font-bold text-blue-400 shrink-0">
+                      RT
+                    </div>
                     <span className="font-semibold text-foreground">RikiTech</span>
                   </div>
 
@@ -417,6 +464,23 @@ const renderComment = (
                   </div>
                 </div>
 
+                {/* Grupo derecho: corazón con contador */}
+                <button
+                  type="button"
+                  onClick={handleLike}
+                  className={`flex items-center gap-1.5 transition ${
+                    hasLiked ? "text-red-500" : "text-muted hover:text-red-500"
+                  }`}
+                  aria-label={hasLiked ? "Quitar like" : "Dar like"}
+                >
+                  <HeartIcon className="h-4 w-4" filled={hasLiked} />
+                  <span className="font-semibold">{likes}</span>
+                </button>
+              </div>
+
+              {/* Línea inferior */}
+              <div className="border-t border-border" />
+
             {/* Caja 3D Mockup */}
             {/* Imagen principal expandida */}
                 {/* Imagen principal expandida */}
@@ -430,135 +494,324 @@ const renderComment = (
                     </div>
                   </div>
 
-            {/* Textos */}
-            <div className="space-y-4 text-[14px] leading-relaxed text-foreground/90">
-            
-              <p>
-                {(software as any).fullOverview || "En lo que respecta a este software, se confirma que es la herramienta lider para optimizar tus tareas diarias con maxima productividad y herramientas intuitivas."}
-              </p>
-            </div>
-
-            {/* Funciones */}
-            <div className="pt-2 space-y-4">
-              <h2 className="text-lg font-bold text-foreground sm:text-xl">Funciones de {software.name}</h2>
-              <ul className="space-y-2.5 text-[13.5px] leading-relaxed text-foreground/90">
-                {software.features && software.features.length > 0 ? (
-                  software.features.map((item: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <span className="text-muted font-bold">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-muted font-bold">•</span>
-                    <span>Herramientas avanzadas integradas y optimizadas para Windows de 64 bits.</span>
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            {/* Nuevas Funciones */}
-            <div className="pt-2 space-y-4">
-              <h2 className="text-lg font-bold text-foreground sm:text-xl">Nuevas funciones en {software.name} {software.version}:</h2>
-              <ul className="space-y-3 text-[13.5px] leading-relaxed text-foreground/90">
-                {software.whatsNew && software.whatsNew.length > 0 ? (
-                  software.whatsNew.map((item: string, idx: number) => (
-                    <li key={idx} className="flex items-start gap-2.5">
-                      <span className="text-muted font-bold">•</span>
-                      <span>{item}</span>
-                    </li>
-                  ))
-                ) : (
-                  <li className="flex items-start gap-2.5">
-                    <span className="text-muted font-bold">•</span>
-                    <span>Rendimiento acelerado y parches de compatibilidad para Windows 11.</span>
-                  </li>
-                )}
-              </ul>
-            </div>
-
-            {/* BOTÓN AZUL ANCHO: CAPTURAS */}
-            <div className="pt-4">
-              <div className="flex w-full items-center justify-center gap-2 rounded-xs bg-[#0052ff] py-3 px-4 text-center text-xs font-black uppercase tracking-wider text-white shadow-md">
-                <span>📷 CAPTURAS DEL PROGRAMA</span>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-xs border border-border bg-card shadow-xl">
-              <img
-                src={(software as any).programScreenshot || software.screenshots[0] || software.image}
-                alt={"Captura de " + software.name}
-                className="w-full object-cover max-h-[460px]"
-              />
-              <div className="bg-muted-bg p-2 text-center text-[11px] text-muted border-t border-border">
-                Interfaz de trabajo de {software.name}
-              </div>
-            </div>
-
-            {/* BOTÓN AZUL ANCHO: DATOS TÉCNICOS */}
-            <div className="pt-2">
-              <div className="flex w-full items-center justify-center gap-2 rounded-xs bg-[#0052ff] py-3 px-4 text-center text-xs font-black uppercase tracking-wider text-white shadow-md">
-                <span>ℹ️ DATOS TÉCNICOS</span>
-              </div>
-            </div>
-
-            <div className="rounded-xs border border-border bg-card p-5 text-center text-[13px] leading-relaxed text-foreground/90">
-              <p className="font-bold text-card-foreground text-sm mb-1">{software.name}</p>
-              <p className="text-muted font-mono text-xs sm:text-[13px]">
-                {(software as any).technicalSummary || ("Idioma: " + ((software as any).language || "Multilenguaje") + " | Peso: " + software.size + " | OS: " + software.operatingSystem + " | Licencia: " + software.license + " | Version: " + software.version + " | +Instrucciones")}
-              </p>
-            </div>
-
-            {/* BOTÓN AZUL ANCHO: ZONA DE DESCARGA */}
-            <div id="descargar" className="pt-2 scroll-mt-24">
-              <div className="flex w-full items-center justify-center gap-2 rounded-xs bg-[#0052ff] py-3 px-4 text-center text-xs font-black uppercase tracking-wider text-white shadow-md">
-                <span>⬇️ ZONA DE DESCARGA</span>
-              </div>
-            </div>
-
-            {/* TABLA DE DESCARGAS */}
-            <div className="overflow-hidden rounded-xs border border-border bg-card">
-              <div className="grid grid-cols-12 bg-muted-bg px-4 py-2.5 text-xs font-bold text-foreground border-b border-border">
-                <div className="col-span-5 sm:col-span-6">Servidor</div>
-                <div className="col-span-4 sm:col-span-3 text-center">Fecha de actualización</div>
-                <div className="col-span-3 text-right">Enlace</div>
-              </div>
-
-              {/* Enlace Público */}
-              <div className="grid grid-cols-12 items-center px-4 py-3.5 border-b border-border hover:bg-muted-bg/60 text-xs">
-                <div className="col-span-5 sm:col-span-6">
-                  <span className="font-black text-rose-500 uppercase tracking-wide">ENLACE PUBLICO</span>
+            {/* Texto de introducción */}
+                <div className="space-y-5 text-[15px] leading-8 text-foreground/80">
+                  <p>
+                     {software.fullOverview ||
+                      `${software.name} es una de las herramientas más prácticas para mantener tu equipo optimizado. Su sistema analiza tu ordenador, identifica los componentes que necesitan atención y propone una instalación sencilla.`}
+                  </p>
+                  <p>
+                    Esta edición incluye una experiencia sin límites, mayor velocidad de descarga y funciones pensadas para que tu equipo se mantenga estable.
+                  </p>
                 </div>
-                <div className="col-span-4 sm:col-span-3 text-center text-muted font-mono">
-                  {software.lastUpdated || "18-08-2026"}
-                </div>
-                <div className="col-span-3 text-right">
-                  <a href={software.downloadUrl || "#"} target="_blank" rel="noopener noreferrer" className="inline-block rounded-xs bg-foreground px-3 py-1 text-[11px] font-bold text-background hover:opacity-90 transition">
-                    Download
-                  </a>
-                </div>
-              </div>
 
-              {/* Enlace VIP */}
-              <div className="grid grid-cols-12 items-center px-4 py-3.5 border-b border-border hover:bg-muted-bg/60 text-xs">
-                <div className="col-span-5 sm:col-span-6">
-                  <span className="font-black text-cyan-500 uppercase tracking-wide dark:text-cyan-400">ENLACE VIP</span>
-                </div>
-                <div className="col-span-4 sm:col-span-3 text-center text-muted font-mono">
-                  {software.lastUpdated || "18-08-2026"}
-                </div>
-                <div className="col-span-3 text-right">
-                  <a href={software.downloadUrl || "#"} target="_blank" rel="noopener noreferrer" className="inline-block rounded-xs bg-foreground px-3 py-1 text-[11px] font-bold text-background hover:opacity-90 transition">
-                    Download
-                  </a>
-                </div>
-              </div>
+                {/* ===== SECCIÓN: LO QUE INCLUYE ===== */}
+                <div className="pt-6">
+                  {/* Encabezado de la sección */}
+                  <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-blue-400">
+                    <BoltIcon className="h-3.5 w-3.5" />
+                    <span>Lo que incluye</span>
+                  </div>
 
-              <div className="p-2 text-center text-[11px] text-muted bg-muted-bg">
-                {password}
-              </div>
-            </div>
+                  <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
+                    Funciones principales
+                  </h2>
+
+                  {/* Lista de funciones en 2 columnas */}
+                  <div className="mt-5 grid gap-x-8 gap-y-3 sm:grid-cols-2 border-t border-border pt-5">
+                    {software.features && software.features.length > 0 ? (
+                      software.features.map((item: string, idx: number) => (
+                        <div key={idx} className="flex items-start gap-2.5">
+                          <CheckIcon className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />
+                          <span className="text-[14px] text-foreground/85 leading-relaxed">
+                            {item}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex items-start gap-2.5">
+                        <CheckIcon className="h-4 w-4 shrink-0 mt-0.5 text-blue-500" />
+                        <span className="text-[14px] text-foreground/85">
+                          Herramientas avanzadas integradas para Windows de 64 bits.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* ===== SECCIÓN: NOVEDADES ===== */}
+                <div className="pt-10">
+                  {/* Encabezado de la sección */}
+                  <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-blue-400">
+                    <StarIcon className="h-3.5 w-3.5" />
+                    <span>Novedades</span>
+                  </div>
+
+                  <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
+                    Qué hay de nuevo en la versión {software.version}
+                  </h2>
+
+                  {/* Lista de novedades numeradas */}
+                  <div className="mt-5 border-t border-border">
+                    {software.whatsNew && software.whatsNew.length > 0 ? (
+                      software.whatsNew.map((item: string, idx: number) => (
+                        <div
+                          key={idx}
+                          className="flex items-start gap-4 py-3.5 border-b border-border/60"
+                        >
+                          <span className="text-[13px] font-bold text-blue-400 shrink-0 tabular-nums">
+                            {String(idx + 1).padStart(2, "0")}
+                          </span>
+                          <span className="text-[14px] text-foreground/85 leading-relaxed">
+                            {item}
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex items-start gap-4 py-3.5">
+                        <span className="text-[13px] font-bold text-blue-400 shrink-0">01</span>
+                        <span className="text-[14px] text-foreground/85">
+                          Rendimiento acelerado y parches de compatibilidad para Windows 11.
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+            {/* ===== SECCIÓN: VISTA PREVIA ===== */}
+                <div className="pt-10">
+                  {/* Encabezado de la sección */}
+                  <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-blue-400">
+                    <MonitorIcon className="h-3.5 w-3.5" />
+                    <span>Vista previa</span>
+                  </div>
+
+                  <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
+                    Así se ve el programa
+                  </h2>
+
+                  {/* Mockup estilo ventana de navegador */}
+                  <div className="mt-5 border-t border-border pt-5">
+                    <div className="overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+                      {/* Barra superior estilo navegador */}
+                      <div className="flex items-center gap-2 border-b border-border bg-muted-bg/40 px-4 py-3">
+                        {/* Botones de ventana (macOS style) */}
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-3 w-3 rounded-full bg-red-500/80"></span>
+                          <span className="h-3 w-3 rounded-full bg-yellow-500/80"></span>
+                          <span className="h-3 w-3 rounded-full bg-green-500/80"></span>
+                        </div>
+                        {/* Título de la ventana */}
+                        <span className="ml-3 text-[11px] font-medium text-muted">
+                          {software.name} Pro
+                        </span>
+                      </div>
+
+                      {/* Contenido de la captura */}
+                      <div className="bg-[#0a0a0c]">
+                        <img
+                          src={(software as any).programScreenshot || software.screenshots[0] || software.image}
+                          alt={"Captura de " + software.name}
+                          className="w-full object-cover max-h-[460px]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Pie de imagen */}
+                  <p className="mt-3 text-center text-[11px] text-muted">
+                    Interfaz principal de {software.name} {software.version}
+                  </p>
+                </div>
+
+                {/* ===== SECCIÓN: DATOS TÉCNICOS ===== */}
+                      <div className="pt-10">
+                        {/* Encabezado de la sección */}
+                        <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-blue-400">
+                          <InfoIcon className="h-3.5 w-3.5" />
+                          <span>Información</span>
+                        </div>
+
+                        <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
+                          Datos técnicos
+                        </h2>
+
+                        {/* Tabla de especificaciones en 2 columnas */}
+                        <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 overflow-hidden rounded-xl border border-border bg-card">
+                          {/* Versión */}
+                          <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4 sm:border-r">
+                            <span className="text-[13px] text-muted">Versión</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.version}
+                            </span>
+                          </div>
+
+                          {/* Sistema */}
+                          <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+                            <span className="text-[13px] text-muted">Sistema</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.operatingSystem}
+                            </span>
+                          </div>
+
+                          {/* Arquitectura */}
+                          <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4 sm:border-r">
+                            <span className="text-[13px] text-muted">Arquitectura</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.architecture || "64 bits"}
+                            </span>
+                          </div>
+
+                          {/* Idioma */}
+                          <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-4">
+                            <span className="text-[13px] text-muted">Idioma</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.language || "Español / Multi"}
+                            </span>
+                          </div>
+
+                          {/* Tamaño - SIN border-b en móvil y SIN sm:border-r en desktop */}
+                          <div className="flex items-center justify-between gap-4 px-5 py-4 sm:border-r sm:border-b-0 border-b border-border sm:border-b-0">
+                            <span className="text-[13px] text-muted">Tamaño</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.size}
+                            </span>
+                          </div>
+
+                          {/* Licencia */}
+                          <div className="flex items-center justify-between gap-4 px-5 py-4">
+                            <span className="text-[13px] text-muted">Licencia</span>
+                            <span className="text-[13px] font-bold text-foreground">
+                              {software.license}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                  {/* ===== SECCIÓN: ZONA DE DESCARGA ===== */}
+                  <div id="descargar" className="pt-10 scroll-mt-24">
+                    {/* Encabezado de la sección */}
+                    <div className="flex items-center justify-between gap-4 mb-5">
+                      <div>
+                        <div className="flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-wider text-blue-400">
+                          <DownloadIcon className="h-3.5 w-3.5" />
+                          <span>Descarga segura</span>
+                        </div>
+                        <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
+                          Elige tu enlace
+                        </h2>
+                      </div>
+
+                      {/* Badge Verificado */}
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold text-emerald-500">
+                        <ShieldCheckIcon className="h-3.5 w-3.5" />
+                        <span>Verificado</span>
+                      </div>
+                    </div>
+
+                    {/* Tarjeta contenedora de enlaces */}
+                    <div className="overflow-hidden rounded-xl border border-border bg-card">
+                      {/* Enlace Público */}
+                      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border p-5">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500 shrink-0">
+                            <GlobeIcon className="h-4.5 w-4.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-[15px] font-bold text-foreground">Enlace público</h3>
+                            <p className="text-[12.5px] text-muted mt-0.5">
+                              Descarga estándar · {software.size}
+                            </p>
+                          </div>
+                        </div>
+                        <a
+                          href={software.downloadUrl || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[13px] font-bold text-white shadow-sm hover:bg-blue-500 transition shrink-0"
+                        >
+                          <DownloadIcon className="h-4 w-4" />
+                          <span>Descargar</span>
+                        </a>
+                      </div>
+
+                      {/* Enlace VIP */}
+                      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-border p-5">
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
+                            <LockIcon className="h-4.5 w-4.5" />
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="text-[15px] font-bold text-foreground">Enlace VIP</h3>
+                            <p className="text-[12.5px] text-muted mt-0.5">
+                              Sin anuncios · Máxima velocidad
+                            </p>
+                          </div>
+                        </div>
+                        <a
+                          href={software.downloadUrl || "#"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/40 px-4 py-2 text-[13px] font-bold text-amber-500 hover:bg-amber-500/20 transition shrink-0"
+                        >
+                          <ZapIcon className="h-4 w-4" />
+                          <span>Descargar</span>
+                        </a>
+                      </div>
+
+                      {/* Barra de contraseña */}
+                      <div className="flex flex-wrap items-center justify-between gap-4 bg-muted-bg/40 px-5 py-3">
+                        <div className="flex items-center gap-2 text-[12.5px] text-muted min-w-0">
+                          <span>Contraseña:</span>
+                          <span className="font-mono font-semibold text-foreground truncate">
+                            {password}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={handleCopyPassword}
+                          className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-blue-400 hover:text-blue-300 transition shrink-0"
+                        >
+                          {copiedPassword ? (
+                            <>
+                              <CheckIcon className="h-3.5 w-3.5" />
+                              <span>¡Copiado!</span>
+                            </>
+                          ) : (
+                            <>
+                              <CopyIcon className="h-3.5 w-3.5" />
+                              <span>Copiar</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Tarjeta: Recibe nuevas publicaciones - FONDO AZUL */}
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-xl border border-blue-500 bg-blue-600 p-5 text-white">
+                      <div className="flex items-start gap-3 min-w-0 flex-1">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/20 text-white shrink-0">
+                          <SendIcon className="h-4.5 w-4.5" />
+                        </div>
+                        <div className="min-w-0">
+                          <h3 className="text-[15px] font-bold text-white">
+                            Recibe nuevas publicaciones
+                          </h3>
+                          <p className="text-[12.5px] text-blue-100 mt-0.5">
+                            Únete al canal y no te pierdas ninguna herramienta.
+                          </p>
+                        </div>
+                      </div>
+                      <a
+                        href="https://t.me/rikitechhd"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-[13px] font-bold text-blue-600 shadow-sm hover:bg-blue-50 transition shrink-0"
+                      >
+                        Unirme al canal
+                      </a>
+                    </div>
+                  </div>
 
             {/* Nota de Tutorial */}
             <div className="text-center text-xs italic text-muted">
@@ -566,66 +819,45 @@ const renderComment = (
               <a href="#tutorial" className="text-cyan-500 font-bold underline hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300">[ Clic Aquí ]</a>
             </div>
 
-            {/* Contraseña */}
-            <div className="text-center py-1">
-              <button
-                type="button"
-                onClick={handleCopyPassword}
-                className="group inline-flex items-center gap-2 text-xs sm:text-sm font-bold tracking-wide text-cyan-500 hover:text-cyan-600 dark:text-cyan-400 dark:hover:text-cyan-300 transition"
-              >
-                <span>CONTRASEÑA/PASSWORD: <span className="underline">{password}</span></span>
-                {copiedPassword ? (
-                  <span className="text-[10px] text-emerald-500 font-normal">¡Copiado!</span>
-                ) : (
-                  <span className="text-[10px] opacity-70 underline">Copiar</span>
+            
+
+
+                {false && (
+                  <>
+                    {/* Banner Miembro VIP */}
+                    <div className="overflow-hidden rounded-xs border border-blue-500/40 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-100 p-4 text-foreground shadow-lg dark:from-blue-950/80 dark:via-indigo-950/80 dark:to-blue-950/80 dark:text-white">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xl">👑</span>
+                          <div>
+                            <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-foreground dark:text-white">
+                              SÉ UN MIEMBRO VIP - DESCARGA SIN ANUNCIOS
+                            </h4>
+                            <p className="text-[11px] text-blue-800 dark:text-blue-200">
+                              Descargas a máxima velocidad garantizadas sin redirecciones.
+                            </p>
+                          </div>
+                        </div>
+                        <a href="#vip" className="rounded-xs bg-amber-500 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-black shadow-sm hover:bg-amber-400 transition">
+                          MÁS INFORMACIÓN
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Tarjeta del Autor */}
+                    <div className="flex items-center gap-4 rounded-xs border border-border bg-card p-5">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple-700 text-white font-black text-lg shadow-md">
+                        <span>D</span>
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-bold text-card-foreground">{author}</h3>
+                        <p className="mt-1 text-xs text-muted leading-relaxed">
+                          {author} es un sitio web de software y noticias de tecnología, con guías completas de instalación para Windows, Juegos y Utilidades.
+                        </p>
+                      </div>
+                    </div>
+                  </>
                 )}
-              </button>
-            </div>
-
-            {/* Botón Telegram Pill */}
-            <div className="flex justify-center pt-1">
-              <a
-                href="https://t.me"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-full bg-[#0078f2] px-6 py-2.5 text-xs font-bold text-white shadow-md transition hover:bg-[#0066d1]"
-              >
-                <span>✈️ ÚNETE A NUESTRO CANAL DE TELEGRAM</span>
-              </a>
-            </div>
-
-            {/* Banner Miembro VIP */}
-            <div className="overflow-hidden rounded-xs border border-blue-500/40 bg-gradient-to-r from-blue-100 via-indigo-100 to-blue-100 p-4 text-foreground shadow-lg dark:from-blue-950/80 dark:via-indigo-950/80 dark:to-blue-950/80 dark:text-white">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">👑</span>
-                  <div>
-                    <h4 className="text-xs sm:text-sm font-black uppercase tracking-wider text-foreground dark:text-white">
-                      SÉ UN MIEMBRO VIP - DESCARGA SIN ANUNCIOS
-                    </h4>
-                    <p className="text-[11px] text-blue-800 dark:text-blue-200">
-                      Descargas a máxima velocidad garantizadas sin redirecciones.
-                    </p>
-                  </div>
-                </div>
-                <a href="#vip" className="rounded-xs bg-amber-500 px-3.5 py-1.5 text-[11px] font-black uppercase tracking-wider text-black shadow-sm hover:bg-amber-400 transition">
-                  MÁS INFORMACIÓN
-                </a>
-              </div>
-            </div>
-
-            {/* Tarjeta del Autor */}
-            <div className="flex items-center gap-4 rounded-xs border border-border bg-card p-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple-700 text-white font-black text-lg shadow-md">
-                <span>D</span>
-              </div>
-              <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-bold text-card-foreground">{author}</h3>
-                <p className="mt-1 text-xs text-muted leading-relaxed">
-                  {author} es un sitio web de software y noticias de tecnología, con guías completas de instalación para Windows, Juegos y Utilidades.
-                </p>
-              </div>
-            </div>
 
             {/* Publicaciones Relacionadas (2x2) */}
             <div className="pt-4">
@@ -668,24 +900,37 @@ const renderComment = (
               </div>
             </div>
 
-            {/* Formulario de Comentarios */}
-            <div className="pt-6">
-              <div className="relative flex items-center justify-center">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-border" />
-                </div>
-                <span className="relative bg-background px-4 text-xs font-bold uppercase tracking-wider text-foreground">
-                  Escribe un comentario
-                </span>
-              </div>
+            {/* ===== SECCIÓN: COMENTARIOS ===== */}
+              <div className="pt-10">
+                {/* Encabezado: Comentarios + contador + filtro */}
+                <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-2xl font-black tracking-tight text-foreground">
+                      Comentarios
+                    </h2>
+                    <span className="text-[15px] text-muted">
+                      ({commentsList.length})
+                    </span>
+                  </div>
 
-                {commentsLoading ? (
+                  {/* Filtro "Más recientes" (visual) */}
+                  <button
+                    type="button"
+                    className="flex items-center gap-1.5 text-[13px] font-semibold text-blue-400 hover:text-blue-300 transition"
+                  >
+                    <span>Más recientes</span>
+                    <ChevronDownIcon className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+
+                {/* Lista de comentarios */}
+                <div className="border-t border-border pt-6">
+                  {commentsLoading ? (
                     <div className="text-center text-xs text-muted py-4">
                       Cargando comentarios...
                     </div>
                   ) : commentsList.length > 0 ? (
-                    <div className="mt-6 space-y-4">
-                      {/* Mostrar solo comentarios principales (parent_id === null) */}
+                    <div className="space-y-6">
                       {commentsList
                         .filter((c) => c.parent_id === null)
                         .map((comment) => renderComment(comment, commentsList))}
@@ -695,55 +940,69 @@ const renderComment = (
                       No hay comentarios todavía. ¡Sé el primero!
                     </div>
                   )}
+                </div>
 
-              <form onSubmit={handleCommentSubmit} className="mt-6 space-y-4">
-                {commentSuccess && (
-                  <div className="rounded-lg bg-emerald-100 border border-emerald-300 p-3 text-xs text-emerald-800 dark:bg-emerald-950/60 dark:border-emerald-800/60 dark:text-emerald-300">
-                    ¡Comentario publicado exitosamente!
+                {/* Formulario de comentario */}
+                <form onSubmit={handleCommentSubmit} className="mt-8">
+                  {commentSuccess && (
+                    <div className="mb-4 rounded-lg bg-emerald-100 border border-emerald-300 p-3 text-xs text-emerald-800 dark:bg-emerald-950/60 dark:border-emerald-800/60 dark:text-emerald-300">
+                      ¡Comentario publicado exitosamente!
+                    </div>
+                  )}
+
+                  {/* Caja del formulario */}
+                  <div className="overflow-hidden rounded-xl border border-border bg-card">
+                    {/* Textarea principal */}
+                    <textarea
+                      rows={4}
+                      required
+                      placeholder="Escribe un comentario..."
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      className="w-full bg-transparent px-5 py-4 text-[14px] text-foreground placeholder:text-muted focus:outline-hidden resize-y border-b border-border"
+                    />
+
+                    {/* Barra inferior: nota + botón publicar */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-3">
+                      <p className="text-[12px] text-muted">
+                        Tu comentario será moderado antes de publicarse.
+                      </p>
+                      <button
+                        type="submit"
+                        className="rounded-lg bg-white px-5 py-2 text-[13px] font-bold text-black shadow-sm hover:bg-zinc-100 transition shrink-0"
+                      >
+                        Publicar
+                      </button>
+                    </div>
                   </div>
-                )}
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <input
-                    type="text"
-                    required
-                    placeholder="Nombre *"
-                    value={commentName}
-                    onChange={(e) => setCommentName(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    value={commentEmail}
-                    onChange={(e) => setCommentEmail(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
-                  />
-                  <input
-                    type="url"
-                    placeholder="Sitio web"
-                    value={commentWebsite}
-                    onChange={(e) => setCommentWebsite(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
-                  />
-                </div>
-                <div>
-                  <textarea
-                    rows={5}
-                    required
-                    placeholder="Escribe tu comentario aquí..."
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background p-3.5 text-xs text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden resize-y"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="rounded-lg bg-foreground border border-border px-6 py-2.5 text-xs font-black uppercase tracking-wider text-background shadow-md hover:opacity-90 transition"
-                >
-                  PUBLICAR COMENTARIO
-                </button>
-              </form>
-            </div>
+
+                  {/* Campos adicionales (opcionales) */}
+                  <div className="mt-3 grid gap-3 sm:grid-cols-3">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Nombre *"
+                      value={commentName}
+                      onChange={(e) => setCommentName(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                    />
+                    <input
+                      type="email"
+                      placeholder="Email (opcional)"
+                      value={commentEmail}
+                      onChange={(e) => setCommentEmail(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                    />
+                    <input
+                      type="url"
+                      placeholder="Sitio web (opcional)"
+                      value={commentWebsite}
+                      onChange={(e) => setCommentWebsite(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+                    />
+                  </div>
+                </form>
+              </div>
           </article>
 
 
@@ -901,22 +1160,7 @@ function TelegramIcon({ className }: { className?: string }) {
 function WhatsAppIcon({ className }: { className?: string }) {
   return (<svg className={className} viewBox="0 0 24 24"><path d="M12.031 0C5.385 0 0 5.385 0 12.031c0 2.122.554 4.188 1.608 6.012L.07 24l6.129-1.57c1.761.961 3.753 1.47 5.832 1.47 6.646 0 12.031-5.385 12.031-12.031C24.062 5.385 18.677 0 12.031 0zm0 22.023c-1.848 0-3.619-.497-5.163-1.428l-.37-.22-3.837.982 1.024-3.74-.241-.383c-1.024-1.63-1.564-3.518-1.564-5.464 0-5.541 4.509-10.05 10.051-10.05 5.542 0 10.05 4.509 10.05 10.05 0 5.541-4.508 10.05-10.05 10.05z" /></svg>);
 }
-function UserIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      className={className}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
-  );
-}
+
 
 function CalendarIcon({ className }: { className?: string }) {
   return (
@@ -949,6 +1193,249 @@ function CommentIcon({ className }: { className?: string }) {
       strokeLinejoin="round"
     >
       <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  );
+}
+function HeartIcon({ className, filled = false }: { className?: string; filled?: boolean }) {
+  return (
+    <svg
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+    </svg>
+  );
+}
+function ClockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+function BoltIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+    </svg>
+  );
+}
+
+function StarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+    </svg>
+  );
+}
+
+function CheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="20 6 9 17 4 12" />
+    </svg>
+  );
+}
+function MonitorIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+      <line x1="8" y1="21" x2="16" y2="21" />
+      <line x1="12" y1="17" x2="12" y2="21" />
+    </svg>
+  );
+}
+
+function InfoIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <line x1="9" y1="9" x2="9.01" y2="9" />
+      <line x1="15" y1="9" x2="15.01" y2="9" />
+      <line x1="9" y1="13" x2="9.01" y2="13" />
+      <line x1="15" y1="13" x2="15.01" y2="13" />
+      <line x1="9" y1="17" x2="9.01" y2="17" />
+      <line x1="15" y1="17" x2="15.01" y2="17" />
+    </svg>
+  );
+}
+function DownloadIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+}
+
+function GlobeIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <line x1="2" y1="12" x2="22" y2="12" />
+      <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+  );
+}
+
+function LockIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+    </svg>
+  );
+}
+
+function ShieldCheckIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <polyline points="9 12 11 14 15 10" />
+    </svg>
+  );
+}
+
+function CopyIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+    </svg>
+  );
+}
+
+function SendIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <line x1="22" y1="2" x2="11" y2="13" />
+      <polygon points="22 2 15 22 11 13 2 9 22 2" />
+    </svg>
+  );
+}
+
+function ZapIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+    </svg>
+  );
+}
+function ChevronDownIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polyline points="6 9 12 15 18 9" />
     </svg>
   );
 }
