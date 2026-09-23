@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function FeaturedSoftware() {
   return (
-    <section className="w-full border-b border-border py-16 sm:py-20">
+    <section className="w-full py-16 sm:py-20">
 
       <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
 

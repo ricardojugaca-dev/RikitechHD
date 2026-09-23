@@ -45,7 +45,9 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
     text: string;
     created_at: string;
     post_slug: string;
-    parent_id: number | null;   // ⭐ NUEVA LÍNEA
+    parent_id: number | null;
+    likes: number;      // ⭐ NUEVO
+    dislikes: number;   // ⭐ NUEVO
   }[]
 >([]);
   const [commentsLoading, setCommentsLoading] = useState(true);
@@ -73,6 +75,77 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
       loadComments();
     }, [currentSlug]);   // ⭐ Se recarga si cambia el slug
 
+        // Dar like o dislike a un comentario
+    const handleVote = async (commentId: number, type: "like" | "dislike") => {
+      const currentVote = userLikes[commentId];
+      const comment = commentsList.find((c) => c.id === commentId);
+      if (!comment) return;
+
+      let newLikes = (comment as any).likes || 0;
+      let newDislikes = (comment as any).dislikes || 0;
+      let newUserVote: "like" | "dislike" | null = type;
+
+      // Si el usuario ya votó lo mismo, quitar el voto
+      if (currentVote === type) {
+        newUserVote = null;
+        if (type === "like") newLikes -= 1;
+        else newDislikes -= 1;
+      } else {
+        // Si cambió de voto, ajustar contadores
+        if (currentVote === "like") newLikes -= 1;
+        if (currentVote === "dislike") newDislikes -= 1;
+        if (type === "like") newLikes += 1;
+        else newDislikes += 1;
+      }
+
+      // Actualizar estado local
+      setUserLikes({ ...userLikes, [commentId]: newUserVote });
+      setCommentsList(
+        commentsList.map((c) =>
+          c.id === commentId
+            ? { ...c, likes: newLikes, dislikes: newDislikes }
+            : c
+        )
+      );
+
+      // Actualizar en Supabase
+      await supabase
+        .from("comments")
+        .update({ likes: newLikes, dislikes: newDislikes })
+        .eq("id", commentId);
+    };
+
+    // Traducir un comentario usando MyMemory API (gratuita)
+    const handleTranslate = async (commentId: number, text: string) => {
+      // Si ya está traducido, quitar la traducción
+      if (translatedComments[commentId]) {
+        const newTranslated = { ...translatedComments };
+        delete newTranslated[commentId];
+        setTranslatedComments(newTranslated);
+        return;
+      }
+
+      try {
+        const res = await fetch(
+          `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|es`
+        );
+        const data = await res.json();
+        const translated = data.responseData?.translatedText || text;
+
+        setTranslatedComments({ ...translatedComments, [commentId]: translated });
+      } catch (err) {
+        console.error("Error al traducir:", err);
+      }
+    };
+
+    // Toggle expandir/colapsar respuestas
+    const toggleReplies = (commentId: number) => {
+      setExpandedReplies({
+        ...expandedReplies,
+        [commentId]: !expandedReplies[commentId],
+      });
+    };
+
   const handleLike = () => {
     if (!hasLiked) {
       setLikes((prev) => prev + 1);
@@ -94,6 +167,11 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
 const [replyText, setReplyText] = useState("");
 const [replyName, setReplyName] = useState("");       // ⭐ NUEVO
 const [replyEmail, setReplyEmail] = useState("");     // ⭐ NUEVO
+
+// Estados para likes, dislikes y traducción
+const [userLikes, setUserLikes] = useState<Record<number, "like" | "dislike" | null>>({});
+const [translatedComments, setTranslatedComments] = useState<Record<number, string>>({});
+const [expandedReplies, setExpandedReplies] = useState<Record<number, boolean>>({});
 
 // Función para publicar una respuesta a un comentario específico
 const handleReplySubmit = async (parentId: number) => {
@@ -193,6 +271,18 @@ const formatDateLong = (dateStr: string | undefined) => {
     return dateStr.toUpperCase();
   }
 };
+  // Contar todas las respuestas anidadas de un comentario (recursivo)
+  const countAllReplies = (commentId: number, allComments: typeof commentsList): number => {
+    const directReplies = allComments.filter((c) => c.parent_id === commentId);
+    let total = directReplies.length;
+    
+    // Sumar recursivamente las respuestas de cada respuesta
+    directReplies.forEach((reply) => {
+      total += countAllReplies(reply.id, allComments);
+    });
+    
+    return total;
+  };
   // Calcular tiempo de lectura basado en el contenido
   const calculateReadTime = (software: any): number => {
     // Concatenar todo el texto del artículo
@@ -235,15 +325,17 @@ const formatDateLong = (dateStr: string | undefined) => {
     return dateStr;
   }
 };
-  // Función recursiva para renderizar comentarios con sus respuestas
+
 const renderComment = (
   comment: typeof commentsList[0],
   allComments: typeof commentsList,
   depth: number = 0
 ): React.ReactNode => {
   const replies = allComments.filter((c) => c.parent_id === comment.id);
+  const isExpanded = expandedReplies[comment.id] === true; // Por defecto colapsado
+  const currentVote = userLikes[comment.id] || null;
+  const translatedText = translatedComments[comment.id];
 
-  // Iniciales del nombre (ej. "Juan Díaz" → "JD")
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -253,7 +345,6 @@ const renderComment = (
       .toUpperCase();
   };
 
-  // Color del avatar basado en el nombre
   const getAvatarColor = (name: string) => {
     const colors = [
       "bg-blue-500/20 text-blue-400",
@@ -288,21 +379,69 @@ const renderComment = (
             </span>
           </div>
 
-          {/* Texto del comentario */}
+          {/* Texto del comentario (traducido o original) */}
           <p className="mt-1.5 text-[14px] text-foreground/85 leading-relaxed">
-            {comment.text}
+            {translatedText || comment.text}
           </p>
 
-          {/* Botón responder */}
+          {/* Botón traducir */}
           <button
             type="button"
-            onClick={() =>
-              setReplyingTo(replyingTo === comment.id ? null : comment.id)
-            }
-            className="mt-1.5 text-[12px] font-bold text-blue-500 hover:text-blue-400 transition"
+            onClick={() => handleTranslate(comment.id, comment.text)}
+            className="mt-1 text-[12px] text-muted hover:text-foreground transition"
           >
-            {replyingTo === comment.id ? "Cancelar" : "Responder"}
+            {translatedText ? "Ver original" : "Traducir al español"}
           </button>
+
+          {/* Acciones: like, dislike, responder */}
+          <div className="mt-2 flex items-center gap-4">
+            {/* Like */}
+            <button
+              type="button"
+              onClick={() => handleVote(comment.id, "like")}
+              className={`flex items-center gap-1.5 text-[12px] transition ${
+                currentVote === "like"
+                  ? "text-blue-500"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              <ThumbsUpIcon
+                className="h-3.5 w-3.5"
+                filled={currentVote === "like"}
+              />
+              <span className="font-semibold">{(comment as any).likes || 0}</span>
+            </button>
+
+            {/* Dislike */}
+            <button
+              type="button"
+              onClick={() => handleVote(comment.id, "dislike")}
+              className={`flex items-center gap-1.5 text-[12px] transition ${
+                currentVote === "dislike"
+                  ? "text-rose-500"
+                  : "text-muted hover:text-foreground"
+              }`}
+            >
+              <ThumbsDownIcon
+                className="h-3.5 w-3.5"
+                filled={currentVote === "dislike"}
+              />
+              <span className="font-semibold">
+                {(comment as any).dislikes || 0}
+              </span>
+            </button>
+
+            {/* Responder */}
+            <button
+              type="button"
+              onClick={() =>
+                setReplyingTo(replyingTo === comment.id ? null : comment.id)
+              }
+              className="text-[12px] font-bold text-muted hover:text-foreground transition"
+            >
+              {replyingTo === comment.id ? "Cancelar" : "Responder"}
+            </button>
+          </div>
 
           {/* Formulario de respuesta inline */}
           {replyingTo === comment.id && (
@@ -348,17 +487,55 @@ const renderComment = (
         </div>
       </div>
 
-      {/* Respuestas anidadas */}
-      {replies.length > 0 && (
-        <div className="ml-3 border-l-2 border-border/40 pl-4">
-          {replies.map((reply) =>
-            renderComment(reply, allComments, depth + 1)
-          )}
-        </div>
-      )}
+              {/* Contar TODAS las respuestas anidadas */}
+        {(() => {
+          const totalReplies = countAllReplies(comment.id, allComments);
+          
+          if (totalReplies === 0) return null;
+          
+          return (
+            <>
+              {/* Botón "X respuestas" (visible solo cuando están colapsadas) */}
+              {!isExpanded && (
+                <button
+                  type="button"
+                  onClick={() => toggleReplies(comment.id)}
+                  className="ml-12 mb-4 flex items-center gap-1.5 text-[13px] font-bold text-blue-500 hover:text-blue-400 transition"
+                >
+                  <span>
+                    {totalReplies} {totalReplies === 1 ? "respuesta" : "respuestas"}
+                  </span>
+                  <ChevronDownIcon className="h-4 w-4" />
+                </button>
+              )}
+
+              {/* Respuestas anidadas (solo si están expandidas) */}
+              {isExpanded && (
+                <>
+                  <div className="ml-3 border-l-2 border-border/40 pl-4">
+                    {replies.map((reply) =>
+                      renderComment(reply, allComments, depth + 1)
+                    )}
+                  </div>
+
+                  {/* Botón "Ocultar respuestas" (visible solo cuando están expandidas) */}
+                  <button
+                    type="button"
+                    onClick={() => toggleReplies(comment.id)}
+                    className="ml-0 mt-4 flex items-center gap-1.5 text-[13px] font-bold text-blue-500 hover:text-blue-400 transition"
+                  >
+                    <span>Ocultar respuestas</span>
+                    <ChevronDownIcon className="h-4 w-4 rotate-180" />
+                  </button>
+                </>
+              )}
+            </>
+          );
+        })()}
     </div>
   );
 };
+
 
   const relatedSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 4);
   const recentSoftware = softwareList.filter((s) => s.slug !== software.slug).slice(0, 5);
@@ -1436,6 +1613,37 @@ function ChevronDownIcon({ className }: { className?: string }) {
       strokeLinejoin="round"
     >
       <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
+}
+function ThumbsUpIcon({ className, filled = false }: { className?: string; filled?: boolean }) {
+  return (
+    <svg
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
+    </svg>
+  );
+}
+
+function ThumbsDownIcon({ className, filled = false }: { className?: string; filled?: boolean }) {
+  return (
+    <svg
+      className={className}
+      fill={filled ? "currentColor" : "none"}
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17" />
     </svg>
   );
 }
