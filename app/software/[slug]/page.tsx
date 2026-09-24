@@ -75,7 +75,22 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
       loadComments();
     }, [currentSlug]);   // ⭐ Se recarga si cambia el slug
 
-        // Dar like o dislike a un comentario
+    // Cargar los votos del usuario desde localStorage
+    useEffect(() => {
+      if (typeof window !== "undefined") {
+        const savedVotes = localStorage.getItem("commentVotes");
+        if (savedVotes) {
+          try {
+            setUserLikes(JSON.parse(savedVotes));
+          } catch (err) {
+            console.error("Error parseando votos:", err);
+          }
+        }
+      }
+    }, []);
+
+
+    // Dar like o dislike a un comentario
     const handleVote = async (commentId: number, type: "like" | "dislike") => {
       const currentVote = userLikes[commentId];
       const comment = commentsList.find((c) => c.id === commentId);
@@ -98,8 +113,13 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
         else newDislikes += 1;
       }
 
+      // Evitar números negativos
+      newLikes = Math.max(0, newLikes);
+      newDislikes = Math.max(0, newDislikes);
+
       // Actualizar estado local
-      setUserLikes({ ...userLikes, [commentId]: newUserVote });
+      const newUserLikes = { ...userLikes, [commentId]: newUserVote };
+      setUserLikes(newUserLikes);
       setCommentsList(
         commentsList.map((c) =>
           c.id === commentId
@@ -108,12 +128,23 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
         )
       );
 
+      // ⭐ GUARDAR en localStorage para persistir el voto del usuario
+      if (typeof window !== "undefined") {
+        localStorage.setItem("commentVotes", JSON.stringify(newUserLikes));
+      }
+
       // Actualizar en Supabase
-      await supabase
+      const { error } = await supabase
         .from("comments")
         .update({ likes: newLikes, dislikes: newDislikes })
         .eq("id", commentId);
+
+      if (error) {
+        console.error("Error al guardar voto:", error);
+      }
     };
+
+     
 
     // Traducir un comentario usando MyMemory API (gratuita)
     const handleTranslate = async (commentId: number, text: string) => {
@@ -175,8 +206,8 @@ const [expandedReplies, setExpandedReplies] = useState<Record<number, boolean>>(
 
 // Función para publicar una respuesta a un comentario específico
 const handleReplySubmit = async (parentId: number) => {
-  if (!replyText.trim() || !replyName.trim()) {
-    alert("Necesitas escribir tu nombre y la respuesta");
+  if (!replyText.trim() || !replyName.trim() || !replyEmail.trim()) {
+    alert("Necesitas escribir tu nombre, email y la respuesta");
     return;
   }
 
@@ -184,8 +215,8 @@ const handleReplySubmit = async (parentId: number) => {
     .from("comments")
     .insert([
       {
-        name: replyName,          // ⭐ Usa replyName
-        email: replyEmail || null, // ⭐ Usa replyEmail
+        name: replyName,
+        email: replyEmail,
         website: null,
         text: replyText,
         post_slug: currentSlug,
@@ -217,17 +248,21 @@ const handleReplySubmit = async (parentId: number) => {
 const handleCommentSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   if (!commentText.trim() || !commentName.trim()) return;
+  if (!commentEmail.trim() || !commentWebsite.trim()) {
+    alert("Por favor completa todos los campos: Nombre, Email y Sitio web");
+    return;
+  }
 
   const { data, error } = await supabase
     .from("comments")
     .insert([
       {
         name: commentName,
-        email: commentEmail || null,
-        website: commentWebsite || null,
+        email: commentEmail,
+        website: commentWebsite,
         text: commentText,
         post_slug: currentSlug,
-        parent_id: null,   // ⭐ Es un comentario principal
+        parent_id: null,
       },
     ])
     .select()
@@ -283,6 +318,77 @@ const formatDateLong = (dateStr: string | undefined) => {
     
     return total;
   };
+
+   // Detectar si un texto está en español (heurística mejorada)
+  const isSpanish = (text: string): boolean => {
+    const lowerText = text.toLowerCase().trim();
+    
+    // Textos extremadamente cortos (1-2 palabras) → no aplicar heurística
+    // Mostrar botón por si acaso (mejor mostrar que ocultar)
+    if (lowerText.length < 8) return false;
+    
+    // Si contiene caracteres específicos del español → es español SEGURO
+    if (/[áéíóúñ¿¡ü]/i.test(text)) return true;
+    
+    // Palabras comunes en inglés (si aparecen, es inglés)
+    const englishWords = [
+      "the", "is", "are", "was", "were", "be", "been",
+      "have", "has", "had", "do", "does", "did",
+      "will", "would", "can", "could", "should",
+      "and", "or", "but", "if", "then",
+      "this", "that", "these", "those",
+      "with", "without", "for", "from", "to", "of",
+      "in", "on", "at", "by", "about",
+      "i", "you", "he", "she", "it", "we", "they",
+      "my", "your", "his", "her", "its", "our", "their",
+      "work", "works", "working", "worked",
+      "great", "good", "bad", "excellent", "amazing",
+      "thanks", "thank", "please", "sorry",
+      "very", "really", "much", "many", "some",
+      "software", "program", "app", "download",
+    ];
+    
+    // Palabras comunes en español
+    const spanishWords = [
+      "el", "la", "los", "las", "un", "una", "unos", "unas",
+      "de", "del", "en", "con", "por", "para", "que", "qué",
+      "y", "o", "a", "al", "se", "le", "lo", "su", "sus",
+      "es", "son", "está", "están", "fue", "era", "ser", "estar",
+      "tiene", "tienen", "hace", "hacen", "puede", "pueden",
+      "funciona", "funcionó", "sirvió", "sirve", "ayuda", "ayudó",
+      "instalar", "instalé", "descargar", "descargué",
+      "yo", "tú", "él", "ella", "nosotros", "ellos", "me", "te",
+      "mi", "tu", "nuestro", "vuestro",
+      "muy", "más", "menos", "todo", "todos", "nada", "algo",
+      "bueno", "buena", "malo", "mala", "excelente", "genial",
+      "bastante", "poco", "mucho", "mucha", "muchos", "muchas",
+      "gracias", "hola", "esto", "esta", "ese", "esa",
+      "aquí", "allí", "también", "tampoco", "siempre", "nunca",
+      "problema", "solución", "aporte", "util", "útil",
+      "comentario", "programa", "software", "versión",
+    ];
+    
+    const words = lowerText
+      .split(/\s+/)
+      .map((w) => w.replace(/[.,!?;:¡¿"']/g, ""));
+    
+    const spanishCount = words.filter((w) => spanishWords.includes(w)).length;
+    const englishCount = words.filter((w) => englishWords.includes(w)).length;
+    
+    // Si hay más palabras en inglés → es inglés
+    if (englishCount > spanishCount) return false;
+    
+    // Si hay más palabras en español → es español
+    if (spanishCount > englishCount) return true;
+    
+    // Empate o sin coincidencias → por defecto inglés (mostrar botón)
+    return false;
+  };
+
+    
+
+
+
   // Calcular tiempo de lectura basado en el contenido
   const calculateReadTime = (software: any): number => {
     // Concatenar todo el texto del artículo
@@ -384,14 +490,18 @@ const renderComment = (
             {translatedText || comment.text}
           </p>
 
-          {/* Botón traducir */}
-          <button
-            type="button"
-            onClick={() => handleTranslate(comment.id, comment.text)}
-            className="mt-1 text-[12px] text-muted hover:text-foreground transition"
-          >
-            {translatedText ? "Ver original" : "Traducir al español"}
-          </button>
+          {/* Botón traducir (solo si NO está en español) */}
+          {!isSpanish(comment.text) && (
+            <button
+              type="button"
+              onClick={() => handleTranslate(comment.id, comment.text)}
+              className="mt-1 text-[12px] text-muted hover:text-foreground transition"
+            >
+              {translatedText ? "Ver original" : "Traducir al español"}
+            </button>
+          )}
+
+                    
 
           {/* Acciones: like, dislike, responder */}
           <div className="mt-2 flex items-center gap-4">
@@ -452,6 +562,14 @@ const renderComment = (
                 placeholder="Tu nombre *"
                 value={replyName}
                 onChange={(e) => setReplyName(e.target.value)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
+              />
+              <input
+                type="email"
+                required
+                placeholder="Tu email *"
+                value={replyEmail}
+                onChange={(e) => setReplyEmail(e.target.value)}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
               />
               <textarea
@@ -1153,7 +1271,7 @@ const renderComment = (
                     </div>
                   </div>
 
-                  {/* Campos adicionales (opcionales) */}
+                 {/* Campos adicionales (opcionales) */}
                   <div className="mt-3 grid gap-3 sm:grid-cols-3">
                     <input
                       type="text"
@@ -1165,14 +1283,16 @@ const renderComment = (
                     />
                     <input
                       type="email"
-                      placeholder="Email (opcional)"
+                      required
+                      placeholder="Email *"
                       value={commentEmail}
                       onChange={(e) => setCommentEmail(e.target.value)}
                       className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
                     />
                     <input
                       type="url"
-                      placeholder="Sitio web (opcional)"
+                      required
+                      placeholder="Sitio web *"
                       value={commentWebsite}
                       onChange={(e) => setCommentWebsite(e.target.value)}
                       className="w-full rounded-lg border border-border bg-background px-3.5 py-2 text-[13px] text-foreground placeholder:text-muted focus:border-blue-600 focus:outline-hidden"
