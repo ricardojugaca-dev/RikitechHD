@@ -84,15 +84,17 @@ export default function Navbar() {
             className="flex items-center gap-2.5 transition-opacity hover:opacity-90"
             onClick={closeMenu}
           >
-            {/* Imagen de tu Logo */}
-            <Image
-              src="/software/Logo.png" // Cambia a la ruta de tu logo en /public (ej: /logo.svg)
-              alt="RIKITECH Logo"
-              width={48}
-              height={48}
-              className="h-12 w-auto object-contain"
-              priority
-            />
+            {/* Logo con fondo blanco circular */}
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-border overflow-hidden shrink-0">
+              <Image
+                src="/software/Logo.png"
+                alt="RIKITECH Logo"
+                width={32}
+                height={32}
+                className="h-full w-full object-contain p-1"
+                priority
+              />
+            </div>
 
             {/* Texto condicional */}
             {SHOW_BRAND_TEXT && (

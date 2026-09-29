@@ -116,12 +116,16 @@ export default function Footer() {
               href="/"
               className="flex items-center gap-2 text-xl font-bold tracking-tight"
             >
-              <Image
-                src="/software/Logo.png"
-                alt="RIKITECH"
-                width={40}
-                height={40}
-              />
+              {/* Logo con fondo blanco circular */}
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-sm border border-border overflow-hidden shrink-0">
+                <Image
+                  src="/software/Logo.png"
+                  alt="RIKITECH"
+                  width={32}
+                  height={32}
+                  className="h-full w-full object-contain p-1"  
+                />
+              </div>
 
               <span className="text-sm font-semibold uppercase tracking-wider">
                 RIKITECH

@@ -731,50 +731,53 @@ const renderComment = (
                   {software.description}
                 </p>
 
-                {/* Línea superior */}
-              <div className="border-t border-border" />
+               
 
-              {/* Metadata con iconos + iniciales + corazón */}
-              <div className="flex flex-wrap items-center justify-between gap-4 text-xs text-muted py-2">
+              {/* Metadata con iconos + iniciales + corazón (con bordes arriba y abajo) */}
+              <div className="flex items-center justify-start sm:justify-between gap-2 sm:gap-3 border-y border-border py-3 text-xs text-muted">
                 {/* Grupo izquierdo: iniciales + autor + fecha + comentarios */}
-                <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-3 min-w-0 sm:flex-1 overflow-hidden">
                   {/* Iniciales RT */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-950 text-[12px] font-bold text-blue-400 shrink-0">
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-950 text-[11px] font-bold text-blue-400 shrink-0">
                       RT
                     </div>
-                    <span className="font-semibold text-foreground">RikiTech</span>
+                    <span className="font-semibold text-foreground text-[11px] sm:text-xs">RikiTech</span>
                   </div>
 
                   {/* Fecha */}
-                  <div className="flex items-center gap-1.5">
-                    <CalendarIcon className="h-3.5 w-3.5" />
-                    <span>{formatDateLong(postDate)}</span>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <CalendarIcon className="h-3.5 w-3.5 shrink-0" />
+                    <span className="text-[10px] sm:text-xs whitespace-nowrap">{formatDateLong(postDate)}</span>
                   </div>
 
                   {/* Comentarios */}
-                  <div className="flex items-center gap-1.5">
-                    <CommentIcon className="h-3.5 w-3.5" />
-                    <span>{commentsList.length} comentarios</span>
-                  </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <CommentIcon className="h-3.5 w-3.5 shrink-0" />
+                      <span className="text-[10px] sm:text-xs whitespace-nowrap">
+                        {commentsList.length}
+                        <span className="hidden sm:inline"> comentarios</span>
+                      </span>
+                    </div>
+
                 </div>
+
 
                 {/* Grupo derecho: corazón con contador */}
                 <button
                   type="button"
                   onClick={handleLike}
-                  className={`flex items-center gap-1.5 transition ${
+                  className={`flex items-center gap-1 shrink-0 transition ${
                     hasLiked ? "text-red-500" : "text-muted hover:text-red-500"
                   }`}
                   aria-label={hasLiked ? "Quitar like" : "Dar like"}
                 >
-                  <HeartIcon className="h-4 w-4" filled={hasLiked} />
-                  <span className="font-semibold">{likes}</span>
+                  <HeartIcon className="h-3.5 w-3.5" filled={hasLiked} />
+                  <span className="font-semibold text-[11px] sm:text-xs">{likes}</span>
                 </button>
               </div>
 
-              {/* Línea inferior */}
-              <div className="border-t border-border" />
+             
 
             {/* Caja 3D Mockup */}
             {/* Imagen principal expandida */}
@@ -930,6 +933,9 @@ const renderComment = (
                         <h2 className="mt-1.5 text-2xl font-black tracking-tight text-foreground sm:text-[26px]">
                           Datos técnicos
                         </h2>
+
+                        {/* Línea horizontal debajo del título */}
+                        <div className="mt-3 border-t border-border" />
 
                         {/* Tabla de especificaciones en 2 columnas */}
                         <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 overflow-hidden rounded-xl border border-border bg-card">
@@ -1194,6 +1200,8 @@ const renderComment = (
                 ))}
               </div>
             </div>
+            {/* Línea divisoria debajo de Publicaciones relacionadas */}
+            <div className="mt-8 border-t border-border" />
 
             {/* ===== SECCIÓN: COMENTARIOS ===== */}
               <div className="pt-10">
