@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   icons: {
-    icon: "/Logo.png",      // <-- Con 'L' mayúscula igual que tu archivo
+    icon: "/Logo.png",
     shortcut: "/Logo.png",
     apple: "/Logo.png",
   },
@@ -65,10 +65,10 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-screen flex flex-col">
+      <body className="flex min-h-dvh flex-col">
         <ThemeProvider>
           <Navbar />
-          {children}
+          <main className="flex flex-1 flex-col">{children}</main>
           <Footer />
           <ScrollToTop />
         </ThemeProvider>
