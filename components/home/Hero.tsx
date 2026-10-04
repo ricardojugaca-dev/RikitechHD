@@ -12,7 +12,7 @@ export default function Hero() {
         <div className="absolute left-1/2 top-0 h-80 w-80 -translate-x-1/2 rounded-full bg-blue-500/10 blur-3xl" />
       </div>
 
-      <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-20 text-center sm:px-6 lg:px-8 lg:py-28">
+      <div className="mx-auto flex w-full max-w-7xl flex-col items-center px-4 py-24 text-center sm:px-6 lg:px-8 lg:py-32">
 
         {/* Badge */}
         <div className="mb-6 rounded-full border border-border bg-card px-4 py-1.5 text-sm text-muted">

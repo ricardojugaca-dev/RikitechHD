@@ -17,7 +17,7 @@ export default function SoftwarePage() {
           </h1>
         </div>
 
-        {/* Grid de software (usa el mismo componente que tu home) */}s
+        {/* Grid de software (usa el mismo componente que tu home) */}
         <SoftwareGrid />
       </main>
     </div>

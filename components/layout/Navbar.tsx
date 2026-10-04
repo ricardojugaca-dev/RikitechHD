@@ -7,63 +7,7 @@ import { useState } from "react";
 
 import ThemeToggle from "@/components/ui/ThemeToggle";
 import SearchModal from "@/components/layout/SearchModal";
-
-interface SubLink {
-  name: string;
-  href: string;
-  description: string;
-}
-
-interface NavItem {
-  name: string;
-  href: string;
-  children?: SubLink[];
-}
-
-const navigation: NavItem[] = [
-  {
-    name: "Software",
-    href: "/software",
-    children: [
-      { name: "Audio", href: "/software?cat=audio", description: "Editores, reproductores y herramientas de audio" },
-      { name: "Video", href: "/software?cat=video", description: "Edición, conversión y reproducción de video" },
-      { name: "Productividad", href: "/software?cat=productividad", description: "Ofimática, notas y gestión de tareas" },
-      { name: "Seguridad", href: "/software?cat=seguridad", description: "Antivirus, VPN y protección del sistema" },
-    ],
-  },
-  {
-    name: "Drivers",
-    href: "/drivers",
-    children: [
-      { name: "Tarjetas de video", href: "/drivers?cat=video", description: "NVIDIA, AMD e Intel Graphics" },
-      { name: "Audio", href: "/drivers?cat=audio", description: "Realtek, Creative y controladoras USB" },
-      { name: "Red", href: "/drivers?cat=red", description: "Wi-Fi, Ethernet y Bluetooth" },
-      { name: "Placa base", href: "/drivers?cat=chipset", description: "Chipsets, BIOS y utilidades de placa" },
-    ],
-  },
-  {
-    name: "Blog",
-    href: "/blog",
-    children: [
-      { name: "Guías", href: "/blog?tag=guias", description: "Tutoriales paso a paso y solucionarios" },
-      { name: "Optimización", href: "/blog?tag=optimizacion", description: "Mejora el rendimiento de tu equipo" },
-      { name: "Análisis", href: "/blog?tag=analisis", description: "Reseñas de hardware y software" },
-      { name: "Noticias", href: "/blog?tag=noticias", description: "Lo último en tecnología e innovación" },
-    ],
-  },
-  {
-    name: "Categorías",
-    href: "/categories",
-    children: [
-      { name: "Periféricos", href: "/categories/perifericos", description: "Teclados, ratones y monitores" },
-      { name: "Componentes", href: "/categories/componentes", description: "CPU, RAM, GPU y almacenamiento" },
-      { name: "Portátiles", href: "/categories/portatiles", description: "Laptops y equipos portátiles" },
-      { name: "Accesorios", href: "/categories/accesorios", description: "Cables, fundas y complementos" },
-    ],
-  },
-];
-// Cambia a 'false' si solo quieres ver el logo sin texto
-const SHOW_BRAND_TEXT = true;
+import { navigation, SHOW_BRAND_TEXT, type NavItem } from "@/data/navigation";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -175,25 +119,16 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="border-t border-border bg-background md:hidden">
-            <nav className="mx-auto flex max-w-7xl flex-col px-4 py-4 sm:px-6">
-              {/* Inicio */}
-              <Link
-                href="/"
-                onClick={closeMenu}
-                className="rounded-md px-3 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
-              >
-                Inicio
-              </Link>
-
-              {/* Navigation Items */}
-              {navigation.map((item) => (
-                <MobileNavItem key={item.href} item={item} closeMenu={closeMenu} />
-              ))}
-            </nav>
-          </div>
-        )}
+          {isMenuOpen && (
+            <div className="border-t border-border bg-background md:hidden">
+              <nav className="mx-auto flex max-w-7xl flex-col px-4 py-4 sm:px-6">
+                {/* Navigation Items (ya incluye Inicio) */}
+                {navigation.map((item) => (
+                  <MobileNavItem key={item.href} item={item} closeMenu={closeMenu} />
+                ))}
+              </nav>
+            </div>
+          )}
       </header>
 
       {/* Search Modal */}
