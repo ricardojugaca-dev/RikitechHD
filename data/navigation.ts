@@ -19,30 +19,45 @@ export const navigation: NavItem[] = [
     href: "/",
   },
 
-  // Software con submenú
+  // Software con submenú basado en categorías reales
   {
     name: "Software",
     href: "/software",
     children: [
       {
-        name: "Audio",
-        href: "/software?cat=audio",
-        description: "Editores, reproductores y herramientas de audio",
+        name: "Todos",
+        href: "/software",
+        description: "Ver todos los programas disponibles",
       },
       {
-        name: "Video",
-        href: "/software?cat=video",
-        description: "Edición, conversión y reproducción de video",
+        name: "Utilities",
+        href: "/software?cat=Utilities",
+        description: "Optimización, limpieza y herramientas del sistema",
       },
       {
-        name: "Productividad",
-        href: "/software?cat=productividad",
-        description: "Ofimática, notas y gestión de tareas",
+        name: "Multimedia",
+        href: "/software?cat=Multimedia",
+        description: "Reproductores, editores de audio y video",
       },
       {
-        name: "Seguridad",
-        href: "/software?cat=seguridad",
-        description: "Antivirus, VPN y protección del sistema",
+        name: "Drivers",
+        href: "/software?cat=Drivers",
+        description: "Controladores y actualizaciones de hardware",
+      },
+      {
+        name: "Internet",
+        href: "/software?cat=Internet",
+        description: "Navegadores, gestores de descargas y redes",
+      },
+      {
+        name: "Graphics & Design",
+        href: "/software?cat=Graphics+%26+Design",
+        description: "Diseño, modelado 3D y edición gráfica",
+      },
+      {
+        name: "Office & Productivity",
+        href: "/software?cat=Office+%26+Productivity",
+        description: "Ofimática, notas y productividad",
       },
     ],
   },
