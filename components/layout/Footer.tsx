@@ -1,17 +1,43 @@
 import Link from "next/link";
 import Image from "next/image";
 
-const footerNavigation = [
-  { name: "Software", href: "/software" },
-  { name: "Drivers", href: "/drivers" },
-  { name: "Blog", href: "/blog" },
-  { name: "Categorías", href: "/categories" },
+// ==========================================
+// Resources: Categorías principales del navbar
+// ==========================================
+const resourcesLinks = [
+  { name: "Todos", href: "/software" },
+  { name: "Utilities", href: "/software?cat=Utilities" },
+  { name: "Multimedia", href: "/software?cat=Multimedia" },
+  { name: "Drivers", href: "/software?cat=Drivers" },
 ];
 
+// ==========================================
+// Company: Información del sitio
+// ==========================================
+const companyLinks = [
+  { name: "Sobre Nosotros", href: "/about" },
+  { name: "Contacto", href: "/contact" },
+  { name: "Publicidad", href: "/advertise" },
+  { name: "DMCA", href: "/dmca" },
+];
+
+// ==========================================
+// Legal: Políticas y términos
+// ==========================================
+const legalLinks = [
+  { name: "Privacidad", href: "/privacy" },
+  { name: "Términos", href: "/terms" },
+  { name: "Cookies", href: "/cookies" },
+  { name: "DMCA", href: "/dmca" },
+];
+
+// ==========================================
+// Redes sociales (con Facebook y Telegram)
+// ==========================================
 const socialLinks = [
   {
     name: "Instagram",
-    href: "#",
+    href: "https://instagram.com",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
         <rect x="3" y="3" width="18" height="18" rx="5" />
@@ -22,7 +48,7 @@ const socialLinks = [
   },
   {
     name: "TikTok",
-    href: "#",
+    href: "https://tiktok.com",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
         <path d="M19.6 7.2c-1.7 0-3.2-1-3.9-2.5-.2-.4-.3-.9-.3-1.4h-3.1v13.2c0 1.5-1.2 2.7-2.7 2.7s-2.7-1.2-2.7-2.7 1.2-2.7 2.7-2.7c.3 0 .7.1 1 .2v-3.2c-.3 0-.7-.1-1-.1-3.2 0-5.8 2.6-5.8 5.8s2.6 5.8 5.8 5.8 5.8-2.6 5.8-5.8V10c1.2.9 2.7 1.4 4.2 1.4V8.3c0-.4 0-.7-.1-1.1Z" />
@@ -31,7 +57,7 @@ const socialLinks = [
   },
   {
     name: "YouTube",
-    href: "#",
+    href: "https://youtube.com/@rikitechhd",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
         <path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 0 0 .5 6.2 31 31 0 0 0 0 12a31 31 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 0 0 2.1-2.1A31 31 0 0 0 24 12a31 31 0 0 0-.5-5.8ZM9.6 15.8V8.2l6.5 3.8-6.5 3.8Z" />
@@ -39,17 +65,17 @@ const socialLinks = [
     ),
   },
   {
-    name: "Discord",
-    href: "#",
+    name: "Facebook",
+    href: "https://facebook.com",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-        <path d="M19.5 5.1A16.4 16.4 0 0 0 15.4 4l-.5 1a15 15 0 0 0-5.8 0l-.5-1a16.4 16.4 0 0 0-4.1 1.1C1.8 8.2 1.1 12.1 1.4 16c1.7 1.3 3.3 2.1 4.9 2.6l1.2-1.7c-.7-.3-1.4-.7-2-1.2l.5-.4c3.8 1.8 8.1 1.8 11.9 0l.5.4c-.6.5-1.3.9-2 1.2l1.2 1.7c1.6-.5 3.2-1.3 4.9-2.6.4-4.5-.8-8.3-3-10.9ZM8.9 14.3c-1.1 0-2-1-2-2.2s.9-2.2 2-2.2 2 1 2 2.2-.9 2.2-2 2.2Zm6.2 0c-.9 0-1.6-.7-1.6-1.6s.7-1.6 1.6-1.6 1.6.7 1.6 1.6-.7 1.6-1.6 1.6Z" />
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
       </svg>
     ),
   },
   {
     name: "X",
-    href: "#",
+    href: "https://twitter.com",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
         <path d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3l-4.9-6.4L6.4 22H3.3l7.2-8.2L2.8 2h6.5l4.4 5.8L18.9 2Zm-1.1 17.9h1.7L8.3 4H6.5l11.3 15.9Z" />
@@ -57,11 +83,11 @@ const socialLinks = [
     ),
   },
   {
-    name: "Reddit",
-    href: "#",
+    name: "Telegram",
+    href: "https://t.me/rikitechhd",
     icon: (
       <svg viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
-        <path d="M21.5 11.2c.2-.5.3-1 .3-1.5 0-1.8-1.5-3.3-3.3-3.3-.9 0-1.7.4-2.3 1-1.3-.9-2.9-1.4-4.7-1.5l1-3.1 2.7.6c.1 1 1 1.7 2 1.5 1-.2 1.7-1.1 1.5-2.1-.2-1-1.1-1.7-2.1-1.5-.6.1-1.1.5-1.3 1l-3.1-.7c-.4-.1-.8.1-.9.5L10 5.9c-1.8.1-3.5.6-4.8 1.5-.6-.6-1.4-1-2.3-1C1.1 6.4-.4 7.9-.4 9.7c0 .5.1 1 .3 1.5-.3.5-.4 1.1-.4 1.8 0 3.7 4.8 6.7 10.7 6.7s10.7-3 10.7-6.7c0-.7-.1-1.3-.4-1.8ZM6.5 12.4c0-.9.7-1.6 1.6-1.6s1.6.7 1.6 1.6S9 14 8.1 14s-1.6-.7-1.6-1.6Zm9.9 3.1c-1.2 1.2-3.1 1.8-5.3 1.8s-4.1-.6-5.3-1.8c-.2-.2-.2-.6 0-.8.2-.2.6-.2.8 0 1 .9 2.6 1.4 4.5 1.4s3.5-.5 4.5-1.4c.2-.2.6-.2.8 0 .2.2.2.6 0 .8Z" />
+        <path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.29c-.15.66-.54.82-1.09.51l-3.02-2.23-1.46 1.41c-.16.16-.3.3-.61.3l.22-3.08 5.61-5.07c.24-.22-.05-.34-.38-.13l-6.93 4.36-2.98-.93c-.65-.2-.66-.65.14-.96l11.66-4.49c.54-.2 1.01.13.82 1.02z" />
       </svg>
     ),
   },
@@ -95,13 +121,13 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* Columna 2: Resources */}
+          {/* Columna 2: Resources (Categorías) */}
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-foreground">
               Resources
             </h3>
             <ul className="mt-4 space-y-2">
-              {footerNavigation.map((item) => (
+              {resourcesLinks.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
@@ -124,6 +150,8 @@ export default function Footer() {
                 <Link
                   key={social.name}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.name}
                   className="text-muted transition-colors hover:text-foreground"
                 >
@@ -139,26 +167,16 @@ export default function Footer() {
               Company
             </h3>
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  License (EULA)
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Brand Guidelines
-                </Link>
-              </li>
+              {companyLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-muted transition-colors hover:text-foreground"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -168,26 +186,16 @@ export default function Footer() {
               Legal
             </h3>
             <ul className="mt-4 space-y-2">
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  License (EULA)
-                </Link>
-              </li>
-              <li>
-                <Link href="#" className="text-sm text-muted transition-colors hover:text-foreground">
-                  Brand Guidelines
-                </Link>
-              </li>
+              {legalLinks.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="text-sm text-muted transition-colors hover:text-foreground"
+                  >
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
