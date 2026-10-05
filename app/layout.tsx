@@ -5,6 +5,9 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
+import ConsentWrapper from "@/components/ConsentWrapper";
+
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,12 +69,14 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-dvh flex-col">
-        <ThemeProvider>
-          <Navbar />
-          <main className="flex flex-1 flex-col">{children}</main>
-          <Footer />
-          <ScrollToTop />
-        </ThemeProvider>
+        <ConsentWrapper>
+          <ThemeProvider>
+            <Navbar />
+            <main className="flex flex-1 flex-col">{children}</main>
+            <Footer />
+            <ScrollToTop />
+          </ThemeProvider>
+        </ConsentWrapper>
       </body>
     </html>
   );

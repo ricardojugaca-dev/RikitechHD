@@ -170,3 +170,479 @@ body {
   --font-mono: var(--font-geist-mono);
   --font-display: "Inter", "system-ui", sans-serif;  /* ⭐ Opcional */
 }
+html {
+  scroll-behavior: smooth;
+}
+/* ========================================== */
+/* Personalización del banner de cookies     */
+/* ========================================== */
+
+/* Colores base (modo claro) */
+:root {
+  --ck-color-bg: #ffffff;
+  --ck-color-ink: #171717;
+  --ck-color-muted: #6b7280;
+  --ck-color-border: #e5e7eb;
+  --ck-color-accent: #2563eb;
+  --ck-color-accent-hover: #1d4ed8;
+  --ck-radius-lg: 12px;
+  --ck-radius-md: 8px;
+}
+
+/* Modo oscuro */
+.dark {
+  --ck-color-bg: #111111;
+  --ck-color-ink: #ededed;
+  --ck-color-muted: #a1a1aa;
+  --ck-color-border: #27272a;
+}
+
+/* ========================================== */
+/* CONTENEDOR PRINCIPAL — BARRA INFERIOR      */
+/* ========================================== */
+.ck-banner,
+[class*="cookie-banner"],
+[class*="CookieBanner"],
+[data-consent-banner] {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  border-top: none !important;
+  outline: none !important;
+  transform: none !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  background-color: var(--ck-color-bg) !important;
+  color: var(--ck-color-ink) !important;
+  /* ⭐ Altura MÁXIMA solo cuando muestra el banner simple */
+  max-height: 320px !important;
+  overflow-y: auto !important;
+  z-index: 9999 !important;
+}
+
+/* ⭐ Cuando está en modo "personalizar", permitir más altura */
+.ck-banner[data-expanded="true"],
+.ck-banner[data-state="customize"],
+.ck-banner[class*="expanded"],
+[class*="cookie-banner"][data-expanded="true"] {
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+}
+
+/* Quitar cualquier línea blanca */
+.ck-banner::before,
+.ck-banner::after,
+[class*="cookie-banner"]::before,
+[class*="cookie-banner"]::after {
+  display: none !important;
+  content: none !important;
+  border: none !important;
+  background: none !important;
+}
+
+/* Contenido interno */
+.ck-banner > *,
+[class*="cookie-banner"] > *,
+[class*="CookieBanner"] > *,
+[data-consent-banner] > * {
+  max-width: 1240px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+  padding: 0.75rem 1.5rem !important;
+}
+
+/* ========================================== */
+/* TIPOGRAFÍA GEIST                           */
+/* ========================================== */
+.ck-banner *,
+[class*="cookie-banner"] *,
+[class*="CookieBanner"] *,
+[data-consent-banner] * {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+}
+
+/* Títulos */
+.ck-banner h1,
+.ck-banner h2,
+.ck-banner h3,
+[class*="cookie-banner"] h1,
+[class*="cookie-banner"] h2,
+[class*="cookie-banner"] h3 {
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  font-size: 1.05rem !important;
+  line-height: 1.3 !important;
+  color: var(--ck-color-ink) !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* Título "Your privacy choices" — negro en light, blanco en dark */
+.ck-banner h1:first-child,
+.ck-banner h2:first-child,
+.ck-banner h3:first-child,
+[class*="cookie-banner"] h1:first-child,
+[class*="cookie-banner"] h2:first-child,
+[class*="cookie-banner"] h3:first-child {
+  color: #171717 !important;
+  font-size: 1.1rem !important;
+  font-weight: 800 !important;
+}
+
+.dark .ck-banner h1:first-child,
+.dark .ck-banner h2:first-child,
+.dark .ck-banner h3:first-child,
+.dark [class*="cookie-banner"] h1:first-child,
+.dark [class*="cookie-banner"] h2:first-child,
+.dark [class*="cookie-banner"] h3:first-child {
+  color: #ededed !important;
+}
+
+/* Párrafos */
+.ck-banner p,
+[class*="cookie-banner"] p {
+  color: var(--ck-color-muted) !important;
+  line-height: 1.5 !important;
+  font-size: 0.8125rem !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* ========================================== */
+/* BOTONES — AZULES                           */
+/* ========================================== */
+.ck-banner button,
+[class*="cookie-banner"] button,
+[class*="CookieBanner"] button,
+[data-consent-banner] button {
+  font-family: var(--font-geist-sans), system-ui, sans-serif !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 0.8125rem !important;
+  padding: 0.5rem 1rem !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer !important;
+  border: 1px solid transparent !important;
+}
+
+/* Primario (Aceptar / Save) — azul relleno */
+.ck-banner button[class*="accept"],
+.ck-banner button[class*="Accept"],
+.ck-banner button[class*="save"],
+.ck-banner button[class*="Save"],
+.ck-banner button[data-variant="primary"],
+.ck-banner button[class*="primary"] {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  border-color: #2563eb !important;
+}
+
+.ck-banner button[class*="accept"]:hover,
+.ck-banner button[class*="save"]:hover {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+/* Secundario (Rechazar / Customize / Back) — azul con borde */
+.ck-banner button[class*="reject"],
+.ck-banner button[class*="Reject"],
+.ck-banner button[class*="customize"],
+.ck-banner button[class*="Customize"],
+.ck-banner button[class*="back"],
+.ck-banner button[class*="Back"],
+.ck-banner button[data-variant="ghost"],
+.ck-banner button[class*="ghost"] {
+  background-color: transparent !important;
+  color: #2563eb !important;
+  border: 1px solid #2563eb !important;
+}
+
+.ck-banner button[class*="reject"]:hover,
+.ck-banner button[class*="customize"]:hover,
+.ck-banner button[class*="back"]:hover {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+}
+
+.dark .ck-banner button[class*="reject"],
+.dark .ck-banner button[class*="customize"],
+.dark .ck-banner button[class*="back"] {
+  color: #60a5fa !important;
+  border-color: #60a5fa !important;
+}
+
+/* ========================================== */
+/* ENLACES — Cookie policy                    */
+/* ========================================== */
+.ck-banner a,
+[class*="cookie-banner"] a {
+  color: #171717 !important;
+  text-decoration: none !important;
+  font-weight: 500 !important;
+  font-size: 0.8125rem !important;
+}
+
+.dark .ck-banner a,
+.dark [class*="cookie-banner"] a {
+  color: #ededed !important;
+}
+
+.ck-banner a:hover,
+[class*="cookie-banner"] a:hover {
+  text-decoration: underline !important;
+}
+
+
+
+/* ========================================== */
+/* SWITCHES — APAGADO BLANCO, PRENDIDO AZUL   */
+/* ========================================== */
+
+/* Estado APAGADO — fondo blanco con borde gris */
+.ck-banner [role="switch"],
+.ck-banner [class*="toggle"],
+.ck-banner [class*="switch"],
+[class*="cookie-banner"] [role="switch"],
+[class*="cookie-banner"] [class*="toggle"],
+[class*="cookie-banner"] [class*="switch"] {
+  background-color: #ffffff !important;
+  border: 2px solid #d1d5db !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+/* Estado ENCENDIDO — fondo azul */
+.ck-banner [role="switch"][aria-checked="true"],
+.ck-banner [role="switch"]:checked,
+.ck-banner [class*="toggle"][aria-checked="true"],
+.ck-banner [class*="switch"][aria-checked="true"],
+.ck-banner [class*="toggle"][data-state="checked"],
+.ck-banner [class*="switch"][data-state="checked"],
+.ck-banner [class*="toggle"][data-checked="true"],
+.ck-banner [class*="switch"][data-checked="true"],
+.ck-banner [class*="toggle"].is-checked,
+.ck-banner [class*="switch"].is-checked,
+.ck-banner [class*="toggle"].active,
+.ck-banner [class*="switch"].active,
+.ck-banner input[type="checkbox"]:checked,
+[class*="cookie-banner"] [role="switch"][aria-checked="true"],
+[class*="cookie-banner"] [class*="toggle"][aria-checked="true"],
+[class*="cookie-banner"] [class*="switch"][aria-checked="true"],
+[class*="cookie-banner"] [class*="toggle"][data-state="checked"],
+[class*="cookie-banner"] [class*="switch"][data-state="checked"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* ⚠️ NO añadimos ::after — el switch ya tiene su propio círculo interno */
+
+/* El círculo interno del switch — blanco siempre (tanto apagado como encendido) */
+.ck-banner [role="switch"] > *,
+.ck-banner [class*="toggle"] > *,
+.ck-banner [class*="switch"] > *,
+[class*="cookie-banner"] [role="switch"] > *,
+[class*="cookie-banner"] [class*="toggle"] > *,
+[class*="cookie-banner"] [class*="switch"] > * {
+  background-color: #ffffff !important;
+}
+
+/* En modo oscuro, el círculo también blanco */
+.dark .ck-banner [role="switch"] > *,
+.dark .ck-banner [class*="toggle"] > *,
+.dark .ck-banner [class*="switch"] > * {
+  background-color: #ffffff !important;
+}
+
+/* Switch en modo oscuro (apagado) */
+.dark .ck-banner [role="switch"],
+.dark .ck-banner [class*="toggle"],
+.dark .ck-banner [class*="switch"] {
+  background-color: #3f3f46 !important;
+  border-color: #52525b !important;
+}
+
+/* Switch en modo oscuro (encendido) */
+.dark .ck-banner [role="switch"][aria-checked="true"],
+.dark .ck-banner [role="switch"]:checked,
+.dark .ck-banner [class*="toggle"][aria-checked="true"],
+.dark .ck-banner [class*="switch"][aria-checked="true"],
+.dark .ck-banner [class*="toggle"][data-state="checked"],
+.dark [class*="cookie-banner"] [role="switch"][aria-checked="true"] {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+}
+
+/* Checkbox nativo (fallback) */
+.ck-banner input[type="checkbox"]:not([role="switch"]),
+[class*="cookie-banner"] input[type="checkbox"]:not([role="switch"]) {
+  accent-color: #2563eb !important;
+}
+/* ========================================== */
+/* MODAL DE PREFERENCIAS — SCROLL INTERNO     */
+/* ========================================== */
+
+/* El contenedor interno del modal de preferencias */
+.ck-banner [class*="preferences"],
+.ck-banner [class*="customize-panel"],
+.ck-banner [class*="settings"],
+.ck-banner [class*="details"],
+[class*="cookie-banner"] [class*="preferences"],
+[class*="cookie-banner"] [class*="customize-panel"],
+[class*="cookie-banner"] [class*="settings"] {
+  /* ⭐ Scroll interno para que se vea todo */
+  max-height: none !important;
+  overflow-y: auto !important;
+  padding-right: 0.5rem !important;
+  border-top: none !important;
+  border-bottom: none !important;
+}
+
+/* Scrollbar personalizado */
+.ck-banner [class*="preferences"]::-webkit-scrollbar,
+[class*="cookie-banner"] [class*="preferences"]::-webkit-scrollbar {
+  width: 6px;
+}
+
+.ck-banner [class*="preferences"]::-webkit-scrollbar-thumb,
+[class*="cookie-banner"] [class*="preferences"]::-webkit-scrollbar-thumb {
+  background-color: var(--ck-color-border);
+  border-radius: 3px;
+}
+
+/* ========================================== */
+/* RESPONSIVE — MÓVIL                         */
+/* ========================================== */
+@media (max-width: 640px) {
+  .ck-banner,
+  [class*="cookie-banner"],
+  [data-consent-banner] {
+    /* ⭐ En móvil: 65% máximo cuando es customize */
+    max-height: 65vh !important;
+    overflow-y: auto !important;
+    border: none !important;
+    border-top: none !important;
+    box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .ck-banner > *,
+  [class*="cookie-banner"] > * {
+    padding: 0.75rem 1rem !important;
+  }
+
+  .ck-banner h1,
+  .ck-banner h2,
+  .ck-banner h3,
+  [class*="cookie-banner"] h1 {
+    font-size: 0.95rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .ck-banner p,
+  [class*="cookie-banner"] p {
+    font-size: 0.75rem !important;
+    line-height: 1.4 !important;
+  }
+
+  .ck-banner button,
+  [class*="cookie-banner"] button {
+    width: 100% !important;
+    padding: 0.625rem 1rem !important;
+    font-size: 0.8125rem !important;
+    margin-bottom: 0.375rem !important;
+  }
+
+  /* En móvil, el banner simple ocupa 50% máximo */
+  .ck-banner:not([data-expanded="true"]):not([data-state="customize"]),
+  [class*="cookie-banner"]:not([data-expanded="true"]) {
+    max-height: 50vh !important;
+  }
+
+  /* En móvil, el customize ocupa 65% máximo */
+  .ck-banner[data-expanded="true"],
+  .ck-banner[data-state="customize"],
+  [class*="cookie-banner"][data-expanded="true"] {
+    max-height: 65vh !important;
+    overflow-y: auto !important;
+  }
+}
+/* ========================================== */
+/* ANIMACIONES SUAVES Y LENTAS                */
+/* ========================================== */
+
+/* El banner sale desde abajo con efecto slide suave */
+@keyframes ckSlideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* El contenido aparece con fade + escala suave */
+@keyframes ckFadeScale {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Aplicar animación al banner principal — 0.8s y curva natural */
+.ck-banner,
+[class*="cookie-banner"],
+[class*="CookieBanner"],
+[data-consent-banner] {
+  animation: ckSlideUp 0.8s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Cuando el banner se expande (Customize), animar con fade + scale lento */
+.ck-banner[data-expanded="true"],
+.ck-banner[data-state="customize"],
+.ck-banner[class*="expanded"],
+[class*="cookie-banner"][data-expanded="true"] {
+  animation: ckFadeScale 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Transición suave del contenido interno */
+.ck-banner > *,
+[class*="cookie-banner"] > * {
+  animation: ckFadeScale 0.7s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Transición suave en todos los elementos interactivos del banner */
+.ck-banner button,
+.ck-banner a,
+.ck-banner [role="switch"],
+.ck-banner input[type="checkbox"],
+[class*="cookie-banner"] button,
+[class*="cookie-banner"] a,
+[class*="cookie-banner"] [role="switch"] {
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Respetar la preferencia de "reducir movimiento" del usuario */
+@media (prefers-reduced-motion: reduce) {
+  .ck-banner,
+  [class*="cookie-banner"],
+  .ck-banner > *,
+  [class*="cookie-banner"] > *,
+  .ck-banner button,
+  [class*="cookie-banner"] button {
+    animation: none !important;
+    transition: none !important;
+  }
+}

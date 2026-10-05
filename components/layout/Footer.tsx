@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-
+import CookieSettings from "@/components/CookieSettings";
 // ==========================================
 // Resources: Categorías principales del navbar
 // ==========================================
@@ -201,11 +201,19 @@ export default function Footer() {
         </div>
 
         {/* Bottom Footer */}
-        <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-muted">
-            © {new Date().getFullYear()} RIKITECH. All rights reserved.
-          </p>
-          <p className="text-sm text-muted">Software, Drivers &amp; Technology</p>
+        <div className="mt-12 flex flex-col gap-4 border-t border-border pt-6">
+          {/* Primera fila: copyright + tagline */}
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <p className="text-sm text-muted">
+              © {new Date().getFullYear()} RIKITECH. All rights reserved.
+            </p>
+            <p className="text-sm text-muted">Software, Drivers &amp; Technology</p>
+          </div>
+
+          {/* Segunda fila: enlace para configurar cookies */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2 border-t border-border/60">
+            <CookieSettings />
+          </div>
         </div>
       </div>
     </footer>
