@@ -6,6 +6,8 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollToTop from "@/components/layout/ScrollToTop";
 import ConsentWrapper from "@/components/ConsentWrapper";
+import ScrollToTopOnNavigate from "@/components/layout/ScrollToTopOnNavigate";
+
 
 
 
@@ -71,6 +73,7 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col">
         <ConsentWrapper>
           <ThemeProvider>
+            <ScrollToTopOnNavigate />
             <Navbar />
             <main className="flex flex-1 flex-col">{children}</main>
             <Footer />
