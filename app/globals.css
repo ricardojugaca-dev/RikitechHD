@@ -880,3 +880,49 @@ html {
     background-color: transparent;
   }
 }
+
+/* ========================================== */
+/* ESTILO PARA EL ENLACE "COOKIE SETTINGS"    */
+/* (usado en la página /cookies)              */
+/* ========================================== */
+
+.cookie-settings-inline {
+  display: inline !important;
+}
+
+.cookie-settings-inline a,
+.cookie-settings-inline button,
+.cookie-settings-inline > * {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  font-weight: 500 !important;
+  font-size: inherit !important;
+  line-height: inherit !important;
+  cursor: pointer !important;
+  display: inline !important;
+  transition: color 0.2s ease !important;
+  box-shadow: none !important;
+}
+
+.cookie-settings-inline a:hover,
+.cookie-settings-inline button:hover,
+.cookie-settings-inline > *:hover {
+  color: #1d4ed8 !important;
+}
+
+/* Modo oscuro: azul más claro */
+.dark .cookie-settings-inline a,
+.dark .cookie-settings-inline button,
+.dark .cookie-settings-inline > * {
+  color: #60a5fa !important;
+}
+
+.dark .cookie-settings-inline a:hover,
+.dark .cookie-settings-inline button:hover,
+.dark .cookie-settings-inline > *:hover {
+  color: #93c5fd !important;
+}

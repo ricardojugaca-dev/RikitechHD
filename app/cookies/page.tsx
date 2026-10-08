@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CookieSettings from "@/components/CookieSettings";
 
 export const metadata = {
   title: "Política de Cookies",
@@ -10,8 +11,9 @@ const sections = [
   { id: "tipos", title: "2. Tipos de cookies" },
   { id: "terceros", title: "3. Cookies de terceros" },
   { id: "gestionar", title: "4. Cómo gestionarlas" },
-  { id: "cambios", title: "5. Cambios en esta política" },
-  { id: "contacto", title: "6. Contacto" },
+  { id: "preferencias", title: "5. Cambiar tus preferencias" },
+  { id: "cambios", title: "6. Cambios en esta política" },
+  { id: "contacto", title: "7. Contacto" },
 ];
 
 export default function CookiesPage() {
@@ -159,9 +161,23 @@ export default function CookiesPage() {
                 </p>
               </section>
 
+              {/* ⭐ NUEVA SECCIÓN: Cambiar preferencias */}
+              <section id="preferencias" className="scroll-mt-24">
+                <h2 className="text-2xl font-bold text-foreground mb-3">
+                  5. Cambiar tus preferencias
+                </h2>
+                <p>
+                  Puedes cambiar tus preferencias de cookies en cualquier momento
+                  haciendo clic en{" "}
+                  <CookieSettings>este enlace</CookieSettings>
+                  . Se abrirá nuevamente el panel de configuración para que ajustes
+                  tu elección.
+                </p>
+              </section>
+
               <section id="cambios" className="scroll-mt-24">
                 <h2 className="text-2xl font-bold text-foreground mb-3">
-                  5. Cambios en esta política
+                  6. Cambios en esta política
                 </h2>
                 <p>
                   Podemos actualizar esta Política de Cookies ocasionalmente.
@@ -172,7 +188,7 @@ export default function CookiesPage() {
 
               <section id="contacto" className="scroll-mt-24">
                 <h2 className="text-2xl font-bold text-foreground mb-3">
-                  6. Contacto
+                  7. Contacto
                 </h2>
                 <p>
                   Para preguntas sobre esta política, contáctanos a través de

@@ -2,8 +2,18 @@
 
 import { CookieSettingsLink } from "consentium";
 
-export default function CookieSettings() {
+interface CookieSettingsProps {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export default function CookieSettings({
+  className,
+  children,
+}: CookieSettingsProps) {
   return (
-    <CookieSettingsLink className="text-xs text-muted hover:text-foreground transition" />
+    <span className={`cookie-settings-inline ${className || ""}`}>
+      <CookieSettingsLink>{children}</CookieSettingsLink>
+    </span>
   );
 }
