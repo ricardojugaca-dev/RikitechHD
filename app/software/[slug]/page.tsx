@@ -641,6 +641,8 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
   // ==========================================
   // RENDER PRINCIPAL
   // ==========================================
+  // URL de prueba temporal — reemplázala por las URLs reales en data/software.ts
+  const TEST_DOWNLOAD_URL = "https://www.mediafire.com/file/abc123/archivo.zip";
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased selection:bg-blue-600 selection:text-white">
       {/* ==========================================
@@ -1035,7 +1037,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                     </div>
                   </div>
                   <a
-                    href={software.downloadUrl || "#"}
+                    href={`https://rikitech-hd-downloads.vercel.app/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[13px] font-bold text-white shadow-sm hover:bg-blue-500 transition shrink-0"
@@ -1057,7 +1059,8 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                     </div>
                   </div>
                   <a
-                    href={software.downloadUrl || "#"}
+                    // Botón "Enlace VIP" — CORREGIDO
+                    href={`https://rikitech-hd-downloads.vercel.app/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/40 px-4 py-2 text-[13px] font-bold text-amber-500 hover:bg-amber-500/20 transition shrink-0"
