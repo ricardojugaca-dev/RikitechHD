@@ -1034,7 +1034,7 @@ export default function SoftwareDetailClient({ slug }: { slug: string }) {
                     </div>
                   </div>
                   <a
-                    href={`https://rikitech-hd-downloads.vercel.app/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
+                    href={`https://rikitech-hd-downloads.pages.dev/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-[13px] font-bold text-white shadow-sm hover:bg-blue-500 transition shrink-0"
@@ -1057,7 +1057,7 @@ export default function SoftwareDetailClient({ slug }: { slug: string }) {
                   </div>
                   <a
                     // Botón "Enlace VIP" — CORREGIDO
-                    href={`https://rikitech-hd-downloads.vercel.app/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
+                    href={`https://rikitech-hd-downloads.pages.dev/?url=${encodeURIComponent(software.downloadUrl || TEST_DOWNLOAD_URL)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-amber-500/10 border border-amber-500/40 px-4 py-2 text-[13px] font-bold text-amber-500 hover:bg-amber-500/20 transition shrink-0"
