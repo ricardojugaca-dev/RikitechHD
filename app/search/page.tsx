@@ -74,7 +74,7 @@ export default function SearchPage() {
               {results.map((software) => (
                 <Link
                   key={software.slug}
-                  href={`/software/${software.slug}`}
+                  href={`/software/detalle/${software.slug}`}
                   className="group overflow-hidden rounded-2xl border border-black/10 bg-black/[0.02] transition hover:-translate-y-1 hover:bg-black/[0.04] dark:border-white/10 dark:bg-white/[0.02] dark:hover:bg-white/[0.04]"
                 >
                   {/* Image */}

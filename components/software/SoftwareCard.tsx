@@ -20,7 +20,7 @@ export default function SoftwareCard({
 
   useEffect(() => {
     // Garantiza que la URL se arme en el navegador sin discrepancias de SSR
-    setShareUrl(`${window.location.origin}/software/${software.slug}`);
+    setShareUrl(`${window.location.origin}/software/detalle/${software.slug}`);
   }, [software.slug]);
 
   const shareTitle = `Descarga ${software.name} - Version ${software.version}`;
@@ -109,7 +109,7 @@ export default function SoftwareCard({
     <article className="group relative min-w-0 overflow-hidden rounded-2xl border border-border bg-card transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
       {/* Image Container */}
       <div className="relative overflow-hidden">
-        <Link href={`/software/${software.slug}`} className="block">
+        <Link href={`/software/detalle/${software.slug}`} className="block">
           <div className="relative aspect-[16/9] w-full min-w-0 overflow-hidden bg-black/5 dark:bg-white/5">
             <Image
               src={software.image}
@@ -141,7 +141,7 @@ export default function SoftwareCard({
           {software.category}
         </span>
 
-        <Link href={`/software/${software.slug}`}>
+        <Link href={`/software/detalle/${software.slug}`}>
           <h3 className="mt-2 text-lg font-semibold tracking-tight transition-colors group-hover:text-blue-500">
             {software.name}
           </h3>
@@ -158,7 +158,7 @@ export default function SoftwareCard({
         {/* Footer Actions */}
         <div className="mt-5 flex items-center justify-between border-t border-border/50 pt-4">
           <Link
-            href={`/software/${software.slug}`}
+            href={`/software/detalle/${software.slug}`}
             className="inline-flex items-center text-sm font-medium transition-colors hover:text-blue-500"
           >
             View details

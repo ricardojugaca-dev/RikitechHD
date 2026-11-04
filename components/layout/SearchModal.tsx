@@ -127,7 +127,7 @@ export default function SearchModal({
               {results.map((software) => (
                 <Link
                   key={software.slug}
-                  href={`/software/${software.slug}`}
+                  href={`/software/detalle/${software.slug}`}
                   onClick={onClose}
                   className="group overflow-hidden rounded-2xl border border-border bg-background transition hover:-translate-y-1 hover:bg-black/[0.03] dark:hover:bg-white/[0.03]"
                 >

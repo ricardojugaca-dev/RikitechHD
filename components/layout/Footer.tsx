@@ -5,10 +5,10 @@ import Image from "next/image";
 // Resources: Categorías principales del navbar
 // ==========================================
 const resourcesLinks = [
-  { name: "Todos", href: "/software" },
-  { name: "Utilities", href: "/software?cat=Utilities" },
-  { name: "Multimedia", href: "/software?cat=Multimedia" },
-  { name: "Drivers", href: "/software?cat=Drivers" },
+  { name: "Todos", href: "/programas" },
+  { name: "Utilities", href: "/programas?cat=Utilities" },
+  { name: "Multimedia", href: "/programas?cat=Multimedia" },
+  { name: "Drivers", href: "/programas?cat=Drivers" },
 ];
 
 // ==========================================

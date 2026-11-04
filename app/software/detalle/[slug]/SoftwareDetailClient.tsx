@@ -10,16 +10,13 @@ import TelegramFeed from "@/components/TelegramFeed";
 import TelegramWidget from "@/components/TelegramWidget";
 import { supabase } from "@/lib/supabase";
 
+
 interface SoftwarePageProps {
   params: Promise<{ slug: string }>;
 }
 
-export default function SoftwareDetailPage({ params }: { params: { slug: string } } | any) {
-  // ==========================================
-  // SOPORTE NEXT.JS 14 Y 15
-  // ==========================================
-  const resolvedParams = React.use(params) as { slug: string };
-  const currentSlug = resolvedParams?.slug || "";
+export default function SoftwareDetailClient({ slug }: { slug: string }) {
+  const currentSlug = slug;
 
   const software = softwareList.find((item) => item.slug === currentSlug) || softwareList[0];
 
@@ -657,7 +654,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
         }`}
       >
         <Link
-          href={`/software/${previousSoftware.slug}`}
+          href={`/software/detalle/${previousSoftware.slug}`}
           className="group flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-md transition hover:scale-110 hover:bg-blue-600 hover:text-white hover:border-blue-600"
           title={`Anterior: ${previousSoftware.name}`}
           aria-label={`Artículo anterior: ${previousSoftware.name}`}
@@ -757,7 +754,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
         }`}
       >
         <Link
-          href={`/software/${nextSoftware.slug}`}
+          href={`/software/detalle/${nextSoftware.slug}`}
           className="group flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-md transition hover:scale-110 hover:bg-blue-600 hover:text-white hover:border-blue-600"
           title={`Siguiente: ${nextSoftware.name}`}
           aria-label={`Artículo siguiente: ${nextSoftware.name}`}
@@ -779,7 +776,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
             <nav className="flex items-center gap-2 text-xs text-muted">
               <Link href="/" className="hover:text-foreground transition">Inicio</Link>
               <span className="text-muted/50">/</span>
-              <Link href="/software" className="hover:text-foreground transition">Software</Link>
+              <Link href="/programas" className="hover:text-foreground transition">Software</Link>
               <span className="text-muted/50">/</span>
               <span className="text-foreground font-medium">{software.name}</span>
             </nav>
@@ -1143,7 +1140,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                 {relatedSoftware.map((item: any) => (
                   <Link
                     key={item.slug}
-                    href={"/software/" + item.slug}
+                    href={`/software/detalle/${item.slug}`}
                     className="group overflow-hidden rounded-lg border border-border bg-card transition hover:bg-card-hover"
                   >
                     <div className="aspect-video w-full overflow-hidden bg-muted-bg">
@@ -1365,7 +1362,7 @@ export default function SoftwareDetailPage({ params }: { params: { slug: string 
                 {recentSoftware.map((item: any) => (
                   <Link
                     key={item.slug}
-                    href={"/software/" + item.slug}
+                    href={`/software/detalle/${item.slug}`}
                     className="group flex items-start gap-2.5 rounded-md p-2 transition hover:bg-muted-bg/60"
                   >
                     <div className="aspect-video w-20 shrink-0 overflow-hidden rounded-md bg-muted-bg border border-border flex items-center justify-center">

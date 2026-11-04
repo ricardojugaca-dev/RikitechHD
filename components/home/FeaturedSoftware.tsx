@@ -18,7 +18,7 @@ export default function FeaturedSoftware() {
           </div>
 
           <Link
-            href="/software"
+            href="/programas"
             className="shrink-0 whitespace-nowrap text-sm font-medium transition-colors hover:text-blue-500 inline-flex"
           >
             View all →

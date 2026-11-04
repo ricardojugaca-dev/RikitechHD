@@ -35,7 +35,7 @@ export type Software = {
 // URL BASE DE TU TECHTASTE
 // =============================================================
 // Si algún día migras el paste a otro dominio, solo cambias esta línea.
-const TECHTASTE_BASE_URL = "https://rikitech.infinityfree.me";
+const TECHTASTE_BASE_URL = "https://techpaste-production.up.railway.app";
 
 export const softwareList: Software[] = [
   {

@@ -74,7 +74,7 @@ export default function SearchBar() {
                   {visibleResults.map((software) => (
                     <Link
                       key={software.slug}
-                      href={`/software/${software.slug}`}
+                      href={`/software/detalle/${software.slug}`}
                       onClick={() => setQuery("")}
                       className="group flex min-w-0 items-center gap-3 rounded-lg p-3 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
                     >
